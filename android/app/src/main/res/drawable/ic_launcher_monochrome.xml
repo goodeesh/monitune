@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Monochrome launcher icon layer (Android 13+ themed icons).
+  Geometry mirrors tool/generate_icon.py: a monitor with three tuning sliders.
+  The system tints this layer with the user's wallpaper palette.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Monitor screen: rounded outline -->
+    <path
+        android:pathData="M35,33.5 L73,33.5 A4.8,4.8 0 0 1 77.8,38.3 L77.8,62.2 A4.8,4.8 0 0 1 73,67 L35,67 A4.8,4.8 0 0 1 30.2,62.2 L30.2,38.3 A4.8,4.8 0 0 1 35,33.5 Z"
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="4.3" />
+
+    <!-- Stand -->
+    <path
+        android:pathData="M50.2,67 L57.8,67 L57.8,71.7 L50.2,71.7 Z"
+        android:fillColor="#FFFFFFFF" />
+
+    <!-- Base -->
+    <path
+        android:pathData="M45.5,73.6 L62.5,73.6"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="3.9"
+        android:strokeLineCap="round" />
+
+    <!-- Slider 1 -->
+    <path
+        android:pathData="M36.7,43.6 L71.3,43.6"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M47.8,40.9 A2.7,2.7 0 1 1 47.79,40.9 Z"
+        android:fillColor="#FFFFFFFF" />
+
+    <!-- Slider 2 -->
+    <path
+        android:pathData="M36.7,50.3 L71.3,50.3"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M60.2,47.6 A2.7,2.7 0 1 1 60.19,47.6 Z"
+        android:fillColor="#FFFFFFFF" />
+
+    <!-- Slider 3 -->
+    <path
+        android:pathData="M36.7,57 L71.3,57"
+        android:strokeColor="#FFFFFFFF"
+        android:strokeWidth="3.2"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M54,54.3 A2.7,2.7 0 1 1 53.99,54.3 Z"
+        android:fillColor="#FFFFFFFF" />
+</vector>
