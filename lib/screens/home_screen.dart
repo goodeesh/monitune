@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:monitune/state/app_state.dart';
+import 'package:monitune/version.dart';
 import 'package:monitune/theme/mono_motion.dart';
 import 'package:monitune/theme/mono_tokens.dart';
 import 'package:monitune/theme/monitune_theme.dart';
@@ -22,6 +23,21 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: tokens.surface,
       appBar: AppBar(
         title: Text('MoniTune', style: tokens.headingMd),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: IconButton(
+              tooltip: 'MoniTune ${AppVersion.current} · check for updates',
+              icon: Badge(
+                isLabelVisible: state.hasKnownUpdate,
+                smallSize: 8,
+                backgroundColor: tokens.accent,
+                child: const Icon(Icons.system_update_alt_rounded),
+              ),
+              onPressed: () => AppInfoSheet.show(context),
+            ),
+          ),
+        ],
       ),
       body: DecoratedBox(
         decoration: BoxDecoration(gradient: tokens.backgroundGradient),
@@ -58,21 +74,7 @@ class HomeScreen extends StatelessWidget {
                       builder: (_) => const AccessScreen(),
                     ),
                     const SizedBox(height: 16),
-                    Center(
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          foregroundColor: tokens.textDim,
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        onPressed: () => AppInfoSheet.show(context),
-                        child: Text(
-                          'MoniTune 1.0.0 · MIT licensed',
-                          style: tokens.bodySm.copyWith(color: tokens.textDim),
-                        ),
-                      ),
-                    ),
+                    _versionRow(context, state),
                   ],
                 ),
               ),
@@ -296,6 +298,76 @@ class HomeScreen extends StatelessWidget {
             ),
           TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
         ],
+      ),
+    );
+  }
+
+  /// Version + update entry point. Deliberately a full-width, normal-contrast
+  /// row: a dim caption at the bottom of the page reads as a label, not
+  /// something you can tap.
+  Widget _versionRow(BuildContext context, AppState state) {
+    final tokens = context.tokens;
+    final subtitle = state.knownUpdateVersion == null
+        ? 'Check for updates · MIT licensed'
+        : 'Update ${state.knownUpdateVersion} available';
+    final radius = BorderRadius.circular(MoniTuneTheme.radiusLg);
+
+    return SpringPress(
+      child: Material(
+        color: tokens.surface,
+        borderRadius: radius,
+        child: InkWell(
+          borderRadius: radius,
+          onTap: () => AppInfoSheet.show(context),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              borderRadius: radius,
+              border: Border.all(
+                color: state.hasKnownUpdate ? tokens.accent : tokens.surfaceBorder,
+                width: state.hasKnownUpdate ? 1.5 : 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    gradient: tokens.primaryGradient,
+                    borderRadius: BorderRadius.circular(MoniTuneTheme.radiusSm),
+                  ),
+                  child: const Icon(Icons.monitor_rounded, color: Colors.white, size: 20),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'MoniTune ${AppVersion.current}',
+                        style: tokens.bodyMd.copyWith(
+                          color: tokens.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: tokens.bodySm.copyWith(
+                          color: state.hasKnownUpdate ? tokens.accent : tokens.textMuted,
+                          fontWeight: state.hasKnownUpdate ? FontWeight.w600 : FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:monitune/services/update_checker.dart';
+import 'package:monitune/state/app_state.dart';
 import 'package:monitune/theme/mono_motion.dart';
 import 'package:monitune/theme/mono_tokens.dart';
 import 'package:monitune/theme/monitune_theme.dart';
+import 'package:monitune/version.dart';
 
 /// Version, distribution channel and the manual update check.
 class AppInfoSheet extends StatefulWidget {
@@ -26,7 +29,7 @@ class AppInfoSheet extends StatefulWidget {
 class _AppInfoSheetState extends State<AppInfoSheet> {
   static const String _releasesUrl = 'https://github.com/goodeesh/monitune/releases';
 
-  String _version = '…';
+  String _version = AppVersion.current;
   String _buildNumber = '';
   bool _checking = false;
   UpdateOutcome? _outcome;
@@ -56,6 +59,15 @@ class _AppInfoSheetState extends State<AppInfoSheet> {
       _outcome = null;
     });
     final outcome = await UpdateChecker.check(_version);
+    if (!mounted) return;
+    // Remember the result so the Home screen can nudge on later launches.
+    if (outcome.status != UpdateStatus.failed) {
+      await context.read<AppState>().recordUpdateCheck(
+            currentVersion: _version,
+            latestVersion: outcome.version,
+            url: outcome.url,
+          );
+    }
     if (!mounted) return;
     setState(() {
       _checking = false;
