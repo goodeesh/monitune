@@ -1,7 +1,7 @@
 name: monitune
 description: "MoniTune - tune your Android display for external monitors."
 publish_to: 'none'
-version: 1.0.0+15
+version: 1.0.1+16
 
 environment:
   sdk: ^3.13.2

@@ -7,6 +7,7 @@ import 'package:monitune/screens/display_screen.dart';
 import 'package:monitune/screens/home_screen.dart';
 import 'package:monitune/screens/onboarding/onboarding_flow.dart';
 import 'package:monitune/state/app_state.dart';
+import 'package:monitune/version.dart';
 import 'package:monitune/theme/monitune_theme.dart';
 
 /// Smoke tests: every screen must build and animate without throwing. These
@@ -72,22 +73,40 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('the version footer opens the app info sheet', (tester) async {
+  testWidgets('the version row opens the app info sheet', (tester) async {
     await tester.pumpWidget(wrap(const HomeScreen()));
     await settle(tester);
     expect(tester.takeException(), isNull);
 
+    // The entry point must be discoverable: a full-width row with normal
+    // contrast that literally says what it does.
     await tester.scrollUntilVisible(
-      find.text('MoniTune 1.0.0 · MIT licensed'),
+      find.text('MoniTune ${AppVersion.current}'),
       200,
       scrollable: find.byType(Scrollable).first,
     );
     await settle(tester);
-    await tester.tap(find.text('MoniTune 1.0.0 · MIT licensed'));
+    expect(tester.takeException(), isNull);
+    expect(find.text('MoniTune ${AppVersion.current}'), findsOneWidget);
+    expect(find.text('Check for updates · MIT licensed'), findsOneWidget);
+
+    await tester.tap(find.text('MoniTune ${AppVersion.current}'));
     await settle(tester);
     expect(tester.takeException(), isNull);
     expect(find.text('Check for updates'), findsOneWidget);
     expect(find.textContaining('Distributed via GitHub Releases'), findsOneWidget);
+  });
+
+  testWidgets('the app bar has an update shortcut', (tester) async {
+    await tester.pumpWidget(wrap(const HomeScreen()));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.byIcon(Icons.system_update_alt_rounded), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.system_update_alt_rounded));
+    await settle(tester);
+    expect(tester.takeException(), isNull);
+    expect(find.text('Check for updates'), findsOneWidget);
   });
 
   testWidgets('a wallpaper-like seed re-themes without errors', (tester) async {

@@ -4,6 +4,20 @@ All notable changes to MoniTune are recorded here. Versions before 1.0.0 were
 development builds published to GitHub Releases; 1.0.0 is the first release
 intended to sit and be used.
 
+## 1.0.1
+
+### Fixed
+- The update check is now discoverable. It was a dim caption at the very
+  bottom of the Home screen, which read as a label rather than something
+  tappable. It is now a full-width **MoniTune <version>** row that says
+  "Check for updates", plus a shortcut button in the app bar.
+- After a check finds a newer version, the app bar button keeps a dot until
+  you update, and the row highlights the available version.
+
+### Added
+- A test that fails the build if `lib/version.dart` and `pubspec.yaml` ever
+  disagree about the version.
+
 ## 1.0.0
 
 First stable release.

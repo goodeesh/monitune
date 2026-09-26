@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:monitune/services/platform_bridge.dart';
+import 'package:monitune/services/update_checker.dart';
 import 'package:monitune/services/wallpaper_palette.dart';
 import 'package:monitune/theme/monitune_theme.dart';
 
@@ -31,6 +32,15 @@ class AppState extends ChangeNotifier {
       if (savedSeed != null) _accentSeed = Color(savedSeed);
       _useWallpaper = _prefs?.getBool('appearance_wallpaper') ?? false;
       _contrastBoost = _prefs?.getBool('appearance_contrast') ?? false;
+      _knownCheckedVersion = _prefs?.getString('update_checked_version');
+      _knownLatestVersion = _prefs?.getString('update_known_version');
+      _knownLatestUrl = _prefs?.getString('update_known_url');
+      if (_knownLatestVersion != null && _knownLatestVersion!.isEmpty) {
+        _knownLatestVersion = null;
+      }
+      if (_knownLatestUrl != null && _knownLatestUrl!.isEmpty) {
+        _knownLatestUrl = null;
+      }
       final savedVariant = _prefs?.getString('appearance_palette');
       if (savedVariant != null) {
         for (final variant in MoniTuneTheme.paletteVariants) {
@@ -133,7 +143,6 @@ class AppState extends ChangeNotifier {
 
   /// The last wallpaper seed read from the OS; `null` if unavailable.
   Color? get wallpaperSeed => _wallpaperSeed;
-
   /// False until the first wallpaper lookup has completed, so the UI can tell
   /// "unavailable" from "not checked yet".
   bool get wallpaperSupported => _wallpaperSeed != null;
@@ -181,6 +190,42 @@ class AppState extends ChangeNotifier {
   /// Re-reads the OS palette. Called on launch, when the user enables the
   /// toggle, and whenever the app returns to the foreground (the wallpaper may
   /// have changed while it was away).
+  // ── Update awareness (set by a manual check) ──
+  String? _knownLatestVersion;
+  String? _knownLatestUrl;
+  String? _knownCheckedVersion;
+
+  /// Newer version reported by the last successful check, or `null`.
+  String? get knownUpdateVersion {
+    final latest = _knownLatestVersion;
+    final installed = _knownCheckedVersion;
+    if (latest == null || installed == null) return null;
+    return compareVersions(latest, installed) > 0 ? latest : null;
+  }
+
+  bool get hasKnownUpdate => knownUpdateVersion != null;
+
+  /// Records the outcome of a manual update check so the Home screen can nudge
+  /// the user on later launches. Stored against the version that checked, so an
+  /// app update clears it automatically.
+  Future<void> recordUpdateCheck({
+    required String currentVersion,
+    String? latestVersion,
+    String? url,
+  }) async {
+    if (_knownCheckedVersion == currentVersion && _knownLatestVersion == latestVersion) return;
+    _knownCheckedVersion = currentVersion;
+    _knownLatestVersion = latestVersion;
+    _knownLatestUrl = url;
+    await _prefs?.setString('update_checked_version', currentVersion);
+    await _prefs?.setString('update_known_version', latestVersion ?? '');
+    await _prefs?.setString('update_known_url', url ?? '');
+    notifyListeners();
+  }
+
+  /// The release page for the version found by the last check.
+  String? get knownUpdateUrl => _knownLatestUrl;
+
   Future<void> refreshWallpaperSeed() async {
     try {
       final seed = await WallpaperPalette.seedColor();
