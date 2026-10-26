@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monitune/l10n/l10n.dart';
 import 'package:monitune/theme/mono_tokens.dart';
 import 'package:monitune/theme/monitune_theme.dart';
 
@@ -46,5 +47,34 @@ void main() {
       contains(DynamicSchemeVariant.expressive),
     );
     expect(MoniTuneTheme.paletteLabel(DynamicSchemeVariant.expressive), 'Expressive');
+  });
+
+  testWidgets('AppLocalizations delegates load correctly for en', (tester) async {
+    await tester.pumpWidget(
+      const MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: SizedBox(),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('AppLocalizations extension context.l10n resolves correctly', (tester) async {
+    late String title;
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) {
+            title = context.l10n.appTitle;
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+    expect(tester.takeException(), isNull);
+    expect(title, 'MoniTune');
   });
 }
