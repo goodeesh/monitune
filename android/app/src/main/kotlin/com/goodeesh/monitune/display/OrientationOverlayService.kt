@@ -120,10 +120,10 @@ class OrientationOverlayService : Service() {
         if (nm.getNotificationChannel(CHANNEL_ID) == null) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Landscape lock",
+                getString(R.string.notif_orientation_channel_name),
                 NotificationManager.IMPORTANCE_LOW,
             ).apply {
-                description = "Shown while Monitune forces the display to landscape."
+                description = getString(R.string.notif_orientation_channel_desc)
                 setShowBadge(false)
             }
             nm.createNotificationChannel(channel)
@@ -138,8 +138,8 @@ class OrientationOverlayService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val notification: Notification = Notification.Builder(this, CHANNEL_ID)
-            .setContentTitle("Monitune")
-            .setContentText("Landscape lock active")
+            .setContentTitle(getString(R.string.notif_orientation_title))
+            .setContentText(getString(R.string.notif_orientation_desc))
             .setSmallIcon(R.drawable.ic_stat_monitune)
             .setOngoing(true)
             .setContentIntent(contentIntent)

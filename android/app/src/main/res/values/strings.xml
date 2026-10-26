@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">External Display Service</string>
+    <string name="notif_external_display_channel_desc">Monitors external display connection events to auto-apply profiles</string>
+    <string name="notif_external_display_title">MoniTune Service Active</string>
+    <string name="notif_external_display_desc">Watching for external display connection</string>
+    <string name="notif_orientation_channel_name">Orientation Overlay Service</string>
+    <string name="notif_orientation_channel_desc">Maintains landscape orientation lock</string>
+    <string name="notif_orientation_title">Force Landscape Active</string>
+    <string name="notif_orientation_desc">Holding landscape orientation</string>
+</resources>

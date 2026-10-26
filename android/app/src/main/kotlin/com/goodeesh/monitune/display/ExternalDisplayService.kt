@@ -247,10 +247,10 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         if (nm.getNotificationChannel(CHANNEL_ID) == null) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "External display watching",
+                getString(R.string.notif_external_display_channel_name),
                 NotificationManager.IMPORTANCE_LOW,
             ).apply {
-                description = "Shown while Monitune waits for a monitor to connect."
+                description = getString(R.string.notif_external_display_channel_desc)
                 setShowBadge(false)
             }
             nm.createNotificationChannel(channel)
@@ -265,8 +265,8 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
         val notification: Notification = Notification.Builder(this, CHANNEL_ID)
-            .setContentTitle("Monitune")
-            .setContentText("Watching for external displays")
+            .setContentTitle(getString(R.string.notif_external_display_title))
+            .setContentText(getString(R.string.notif_external_display_desc))
             .setSmallIcon(R.drawable.ic_stat_monitune)
             .setOngoing(true)
             .setContentIntent(contentIntent)
