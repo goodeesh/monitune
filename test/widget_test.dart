@@ -77,4 +77,29 @@ void main() {
     expect(tester.takeException(), isNull);
     expect(title, 'MoniTune');
   });
+
+  testWidgets('AppLocalizations provides complete master catalog strings and formats placeholders', (tester) async {
+    late AppLocalizations l10n;
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: Builder(
+          builder: (context) {
+            l10n = context.l10n;
+            return const SizedBox();
+          },
+        ),
+      ),
+    );
+    expect(l10n.commonCancel, 'Cancel');
+    expect(l10n.homeKeepSettings, 'Keep Settings');
+    expect(l10n.homeRevertCountdown(15), 'Auto-reverting in 15s unless confirmed');
+    expect(l10n.homeActiveProfileLabel(1920, 1080, 100, 320), '1920x1080 @ 100% (320 DPI)');
+    expect(l10n.displayScaleDpiIndicator(100, 320), '100% (320 DPI)');
+    expect(l10n.infoVersion('1.0.1'), 'Version 1.0.1');
+    expect(l10n.displayPreset1080p, '1080p Full HD (1920 × 1080)');
+    expect(l10n.accessTitle, 'Access & Permissions');
+    expect(l10n.onboardingWelcomeTitle, 'Welcome to MoniTune');
+  });
 }
