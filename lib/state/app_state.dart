@@ -198,6 +198,12 @@ class AppState extends ChangeNotifier {
     if (_selectedLanguageCode == null) return null;
     final parts = _selectedLanguageCode!.split(RegExp(r'[-_]'));
     if (parts.length > 1) {
+      if (parts[0] == 'zh' &&
+          (parts[1].toUpperCase() == 'TW' ||
+              parts[1].toUpperCase() == 'HK' ||
+              parts[1].toLowerCase() == 'hant')) {
+        return const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant');
+      }
       return Locale(parts[0], parts[1]);
     }
     return Locale(_selectedLanguageCode!);

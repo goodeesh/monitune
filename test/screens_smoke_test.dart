@@ -10,6 +10,8 @@ import 'package:monitune/state/app_state.dart';
 import 'package:monitune/version.dart';
 import 'package:monitune/theme/monitune_theme.dart';
 import 'package:monitune/l10n/l10n.dart';
+import 'package:monitune/l10n/app_localizations_pt.dart';
+import 'package:monitune/l10n/app_localizations_zh.dart';
 
 /// Smoke tests: every screen must build and animate without throwing. These
 /// catch theme/motion mistakes (for example reading an inherited widget during
@@ -48,6 +50,22 @@ void main() {
     await state3.initialize();
     expect(state3.appLocale, isNull);
     expect(state3.selectedLanguageCode, isNull);
+  });
+
+  test('AppState resolves zh_TW to AppLocalizationsZhHant and pt_BR to AppLocalizationsPtBr', () async {
+    final state = AppState();
+    await state.setLanguage('zh_TW');
+    expect(
+      state.appLocale,
+      const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+    );
+    final zhLoc = lookupAppLocalizations(state.appLocale!);
+    expect(zhLoc, isA<AppLocalizationsZhHant>());
+
+    await state.setLanguage('pt_BR');
+    expect(state.appLocale, const Locale('pt', 'BR'));
+    final ptLoc = lookupAppLocalizations(state.appLocale!);
+    expect(ptLoc, isA<AppLocalizationsPtBr>());
   });
 
   Widget wrap(Widget child, {Color seed = MoniTuneTheme.fallbackSeed, AppState? state}) {
