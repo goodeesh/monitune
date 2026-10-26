@@ -4,6 +4,30 @@ All notable changes to MoniTune are recorded here. Versions before 1.0.0 were
 development builds published to GitHub Releases; 1.0.0 is the first release
 intended to sit and be used.
 
+## 1.1.0
+
+### Added
+- **Full Internationalization (i18n)**: MoniTune is now fully translated into 17 languages:
+  - Brazilian Portuguese (`pt-BR`)
+  - Simplified Chinese (`zh-CN`)
+  - Traditional Chinese (`zh-TW`)
+  - Spanish (`es`)
+  - French (`fr`)
+  - Italian (`it`)
+  - German (`de`)
+  - Dutch (`nl`)
+  - Polish (`pl`)
+  - Russian (`ru`)
+  - Turkish (`tr`)
+  - Japanese (`ja`)
+  - Korean (`ko`)
+  - Hindi (`hi`)
+  - Arabic (`ar`, with full Right-to-Left layout support)
+  - Indonesian (`id`)
+  - Vietnamese (`vi`)
+- **In-App Language Selector**: Under **Display → Appearance & Language**, select any language using native autonyms, or default to following system language.
+- **Localized Background Notifications**: Android foreground service channels and notifications for external display detection and force-landscape overlays are now localized.
+
 ## 1.0.1
 
 ### Fixed
