@@ -185,14 +185,15 @@ void main() {
       expect(result.syntaxErrors, isNotEmpty);
     });
 
-    test('validateDirectory on current lib/l10n passes with template valid and 0 targets', () {
+    test('validateDirectory on current lib/l10n passes with template valid and all targets valid', () {
       final report = L10nValidator.validateDirectory(Directory('lib/l10n'));
       expect(report.isValid, isTrue);
       expect(report.templateError, isNull);
       expect(report.template, isNotNull);
       expect(report.template!.locale, 'en');
       expect(report.template!.keys.length, greaterThan(50));
-      expect(report.targetResults, isEmpty);
+      expect(report.targetResults, isNotEmpty);
+      expect(report.targetResults.every((r) => r.isValid), isTrue);
     });
 
     test(

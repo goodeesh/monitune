@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">外部ディスプレイサービス</string>
+    <string name="notif_external_display_channel_desc">外部ディスプレイの接続を監視してプロファイルを自動適用します</string>
+    <string name="notif_external_display_title">MoniTune サービス実行中</string>
+    <string name="notif_external_display_desc">外部ディスプレイの接続を待機中</string>
+    <string name="notif_orientation_channel_name">画面の向きオーバーレイサービス</string>
+    <string name="notif_orientation_channel_desc">横向きの画面固定を維持します</string>
+    <string name="notif_orientation_title">強制横向きが有効です</string>
+    <string name="notif_orientation_desc">横向きを維持しています</string>
+</resources>

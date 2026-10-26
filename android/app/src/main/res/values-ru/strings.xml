@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Служба внешнего экрана</string>
+    <string name="notif_external_display_channel_desc">Отслеживает подключение внешнего экрана для автоприменения профилей</string>
+    <string name="notif_external_display_title">Служба MoniTune активна</string>
+    <string name="notif_external_display_desc">Ожидание подключения внешнего экрана</string>
+    <string name="notif_orientation_channel_name">Служба оверлея ориентации</string>
+    <string name="notif_orientation_channel_desc">Удерживает блокировку альбомной ориентации</string>
+    <string name="notif_orientation_title">Принудительный альбомный режим активен</string>
+    <string name="notif_orientation_desc">Удержание альбомной ориентации</string>
+</resources>

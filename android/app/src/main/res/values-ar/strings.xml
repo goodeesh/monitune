@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">خدمة الشاشة الخارجية</string>
+    <string name="notif_external_display_channel_desc">مراقبة اتصالات الشاشة الخارجية لتطبيق الملفات التعريفية تلقائيًا</string>
+    <string name="notif_external_display_title">خدمة MoniTune نشطة</string>
+    <string name="notif_external_display_desc">بانتظار اتصال الشاشة الخارجية</string>
+    <string name="notif_orientation_channel_name">خدمة تراكب الاتجاه</string>
+    <string name="notif_orientation_channel_desc">الحفاظ على قفل الاتجاه الأفقي</string>
+    <string name="notif_orientation_title">فرض الوضع الأفقي نشط</string>
+    <string name="notif_orientation_desc">يجري الحفاظ على الاتجاه الأفقي</string>
+</resources>

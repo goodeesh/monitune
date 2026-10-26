@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Service d\'écran externe</string>
+    <string name="notif_external_display_channel_desc">Surveille les connexions d\'écrans externes pour appliquer automatiquement les profils</string>
+    <string name="notif_external_display_title">Service MoniTune actif</string>
+    <string name="notif_external_display_desc">En attente d\'une connexion d\'écran externe</string>
+    <string name="notif_orientation_channel_name">Service de superposition d\'orientation</string>
+    <string name="notif_orientation_channel_desc">Maintient le verrouillage en orientation paysage</string>
+    <string name="notif_orientation_title">Forcer le mode paysage actif</string>
+    <string name="notif_orientation_desc">Maintien du mode paysage en cours</string>
+</resources>

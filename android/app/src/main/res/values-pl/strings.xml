@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Usługa ekranu zewnętrznego</string>
+    <string name="notif_external_display_channel_desc">Monitoruje podłączanie ekranów zewnętrznych, aby automatycznie stosować profile</string>
+    <string name="notif_external_display_title">Usługa MoniTune aktywna</string>
+    <string name="notif_external_display_desc">Oczekiwanie na podłączenie ekranu zewnętrznego</string>
+    <string name="notif_orientation_channel_name">Usługa nakładki orientacji</string>
+    <string name="notif_orientation_channel_desc">Utrzymuje blokadę orientacji poziomej</string>
+    <string name="notif_orientation_title">Wymuszenie orientacji poziomej aktywne</string>
+    <string name="notif_orientation_desc">Utrzymywanie orientacji poziomej</string>
+</resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Dienst voor extern scherm</string>
+    <string name="notif_external_display_channel_desc">Bewaakt externe schermverbindingen om profielen automatisch toe te passen</string>
+    <string name="notif_external_display_title">MoniTune-dienst actief</string>
+    <string name="notif_external_display_desc">Wachten op externe schermverbinding</string>
+    <string name="notif_orientation_channel_name">Oriëntatie-overlaydienst</string>
+    <string name="notif_orientation_channel_desc">Behoudt vergrendeling in liggende stand</string>
+    <string name="notif_orientation_title">Liggend forceren actief</string>
+    <string name="notif_orientation_desc">Liggende stand wordt behouden</string>
+</resources>

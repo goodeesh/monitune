@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">外接螢幕服務</string>
+    <string name="notif_external_display_channel_desc">監控外接螢幕連線事件以自動套用設定檔</string>
+    <string name="notif_external_display_title">MoniTune 服務運行中</string>
+    <string name="notif_external_display_desc">正在等候外接螢幕連線</string>
+    <string name="notif_orientation_channel_name">螢幕方向懸浮窗服務</string>
+    <string name="notif_orientation_channel_desc">維持橫向螢幕鎖定</string>
+    <string name="notif_orientation_title">強制橫向生效中</string>
+    <string name="notif_orientation_desc">正在保持橫向螢幕</string>
+</resources>

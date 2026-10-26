@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Dịch vụ màn hình ngoài</string>
+    <string name="notif_external_display_channel_desc">Theo dõi sự kiện kết nối màn hình ngoài để tự động áp dụng cấu hình</string>
+    <string name="notif_external_display_title">Dịch vụ MoniTune đang hoạt động</string>
+    <string name="notif_external_display_desc">Đang chờ kết nối màn hình ngoài</string>
+    <string name="notif_orientation_channel_name">Dịch vụ lớp phủ hướng màn hình</string>
+    <string name="notif_orientation_channel_desc">Duy trì khóa hướng màn hình ngang</string>
+    <string name="notif_orientation_title">Bắt buộc xoay ngang đang bật</string>
+    <string name="notif_orientation_desc">Đang duy trì hướng màn hình ngang</string>
+</resources>

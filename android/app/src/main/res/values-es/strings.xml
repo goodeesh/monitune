@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Servicio de pantalla externa</string>
+    <string name="notif_external_display_channel_desc">Supervisa eventos de conexión de pantalla externa para aplicar perfiles automáticamente</string>
+    <string name="notif_external_display_title">Servicio MoniTune activo</string>
+    <string name="notif_external_display_desc">Esperando conexión de pantalla externa</string>
+    <string name="notif_orientation_channel_name">Servicio de superposición de orientación</string>
+    <string name="notif_orientation_channel_desc">Mantiene el bloqueo de orientación horizontal</string>
+    <string name="notif_orientation_title">Forzar horizontal activo</string>
+    <string name="notif_orientation_desc">Manteniendo la orientación horizontal</string>
+</resources>

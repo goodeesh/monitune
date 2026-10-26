@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Layanan Layar Eksternal</string>
+    <string name="notif_external_display_channel_desc">Memantau sambungan layar eksternal untuk menerapkan profil secara otomatis</string>
+    <string name="notif_external_display_title">Layanan MoniTune Aktif</string>
+    <string name="notif_external_display_desc">Menunggu sambungan layar eksternal</string>
+    <string name="notif_orientation_channel_name">Layanan Overlay Orientasi</string>
+    <string name="notif_orientation_channel_desc">Mempertahankan penguncian orientasi lanskap</string>
+    <string name="notif_orientation_title">Paksa Lanskap Aktif</string>
+    <string name="notif_orientation_desc">Mempertahankan orientasi lanskap</string>
+</resources>

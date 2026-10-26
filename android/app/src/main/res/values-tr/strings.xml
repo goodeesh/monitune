@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Harici Ekran Hizmeti</string>
+    <string name="notif_external_display_channel_desc">Profilleri otomatik uygulamak için harici ekran bağlantılarını izler</string>
+    <string name="notif_external_display_title">MoniTune Hizmeti Etkin</string>
+    <string name="notif_external_display_desc">Harici ekran bağlantısı bekleniyor</string>
+    <string name="notif_orientation_channel_name">Yönlendirme Katmanı Hizmeti</string>
+    <string name="notif_orientation_channel_desc">Yatay yön kilidini korur</string>
+    <string name="notif_orientation_title">Yatay Modu Zorla Etkin</string>
+    <string name="notif_orientation_desc">Yatay yönlendirme korunuyor</string>
+</resources>

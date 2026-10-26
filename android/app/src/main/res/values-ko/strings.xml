@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">외부 디스플레이 서비스</string>
+    <string name="notif_external_display_channel_desc">외부 디스플레이 연결 이벤트를 모니터링하여 프로필을 자동으로 적용합니다</string>
+    <string name="notif_external_display_title">MoniTune 서비스 실행 중</string>
+    <string name="notif_external_display_desc">외부 디스플레이 연결 대기 중</string>
+    <string name="notif_orientation_channel_name">화면 방향 오버레이 서비스</string>
+    <string name="notif_orientation_channel_desc">가로 모드 방향 잠금을 유지합니다</string>
+    <string name="notif_orientation_title">가로 모드 강제 실행 중</string>
+    <string name="notif_orientation_desc">가로 방향 유지 중</string>
+</resources>

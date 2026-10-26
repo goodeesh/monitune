@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">बाहरी डिस्प्ले सेवा</string>
+    <string name="notif_external_display_channel_desc">प्रोफ़ाइल स्वतः लागू करने के लिए बाहरी डिस्प्ले कनेक्शन की निगरानी करता है</string>
+    <string name="notif_external_display_title">MoniTune सेवा सक्रिय है</string>
+    <string name="notif_external_display_desc">बाहरी डिस्प्ले कनेक्शन की प्रतीक्षा की जा रही है</string>
+    <string name="notif_orientation_channel_name">स्क्रीन ओरिएंटेशन ओवरले सेवा</string>
+    <string name="notif_orientation_channel_desc">लैंडस्केप ओरिएंटेशन लॉक बनाए रखता है</string>
+    <string name="notif_orientation_title">फ़ोर्स लैंडस्केप सक्रिय है</string>
+    <string name="notif_orientation_desc">लैंडस्केप ओरिएंटेशन बनाए रखा जा रहा है</string>
+</resources>

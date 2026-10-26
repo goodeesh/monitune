@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notif_external_display_channel_name">Dienst für externe Displays</string>
+    <string name="notif_external_display_channel_desc">Überwacht Verbindungen externer Displays, um Profile automatisch anzuwenden</string>
+    <string name="notif_external_display_title">MoniTune-Dienst aktiv</string>
+    <string name="notif_external_display_desc">Warten auf externe Display-Verbindung</string>
+    <string name="notif_orientation_channel_name">Ausrichtungs-Overlay-Dienst</string>
+    <string name="notif_orientation_channel_desc">Behält die Querformat-Sperre bei</string>
+    <string name="notif_orientation_title">Querformat erzwingen aktiv</string>
+    <string name="notif_orientation_desc">Querformat wird beibehalten</string>
+</resources>
