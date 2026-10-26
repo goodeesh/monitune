@@ -9,6 +9,7 @@ import 'package:monitune/screens/onboarding/onboarding_flow.dart';
 import 'package:monitune/state/app_state.dart';
 import 'package:monitune/version.dart';
 import 'package:monitune/theme/monitune_theme.dart';
+import 'package:monitune/l10n/l10n.dart';
 
 /// Smoke tests: every screen must build and animate without throwing. These
 /// catch theme/motion mistakes (for example reading an inherited widget during
@@ -16,11 +17,42 @@ import 'package:monitune/theme/monitune_theme.dart';
 void main() {
   setUp(() => SharedPreferences.setMockInitialValues({}));
 
+  test('AppState updates locale and persists to SharedPreferences', () async {
+    SharedPreferences.setMockInitialValues({});
+    final state = AppState();
+    await state.initialize();
+    expect(state.appLocale, isNull); // Default system locale
+
+    await state.setLanguage('pt');
+    expect(state.appLocale, const Locale('pt'));
+    expect(state.selectedLanguageCode, 'pt');
+
+    final state2 = AppState();
+    await state2.initialize();
+    expect(state2.appLocale, const Locale('pt'));
+    expect(state2.selectedLanguageCode, 'pt');
+
+    await state.setLanguage('pt_BR');
+    expect(state.appLocale, const Locale('pt', 'BR'));
+    expect(state.selectedLanguageCode, 'pt_BR');
+
+    await state.setLanguage(null);
+    expect(state.appLocale, isNull);
+    expect(state.selectedLanguageCode, isNull);
+
+    final state3 = AppState();
+    await state3.initialize();
+    expect(state3.appLocale, isNull);
+    expect(state3.selectedLanguageCode, isNull);
+  });
+
   Widget wrap(Widget child, {Color seed = MoniTuneTheme.fallbackSeed}) {
     return ChangeNotifierProvider(
       create: (_) => AppState(),
       child: MaterialApp(
         theme: MoniTuneTheme.build(seed: seed),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         home: child,
       ),
     );

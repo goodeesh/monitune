@@ -9,6 +9,9 @@ import 'package:monitune/theme/monitune_theme.dart';
 
 /// Central state for MoniTune. Display configuration and appearance only.
 class AppState extends ChangeNotifier {
+  static const String _keyLanguageCode = 'pref_language_code';
+  String? _selectedLanguageCode;
+
   SharedPreferences? _prefs;
 
   AppState() {
@@ -18,6 +21,7 @@ class AppState extends ChangeNotifier {
   Future<void> _initPrefs() async {
     try {
       _prefs = await SharedPreferences.getInstance();
+      _selectedLanguageCode = _prefs?.getString(_keyLanguageCode);
       _onboardingComplete = _prefs?.getBool('onboarding_complete') ?? false;
       _targetResolution = _prefs?.getString('display_target_resolution') ?? '1080p';
       _customWidth = _prefs?.getInt('display_custom_width') ?? 1920;
@@ -187,6 +191,30 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  // ── Locale / Language ──
+  String? get selectedLanguageCode => _selectedLanguageCode;
+
+  Locale? get appLocale {
+    if (_selectedLanguageCode == null) return null;
+    final parts = _selectedLanguageCode!.split('_');
+    if (parts.length > 1) {
+      return Locale(parts[0], parts[1]);
+    }
+    return Locale(_selectedLanguageCode!);
+  }
+
+  Future<void> setLanguage(String? code) async {
+    if (_selectedLanguageCode == code) return;
+    _selectedLanguageCode = code;
+    final prefs = await SharedPreferences.getInstance();
+    if (code == null) {
+      await prefs.remove(_keyLanguageCode);
+    } else {
+      await prefs.setString(_keyLanguageCode, code);
+    }
+    notifyListeners();
+  }
+
   /// Re-reads the OS palette. Called on launch, when the user enables the
   /// toggle, and whenever the app returns to the foreground (the wallpaper may
   /// have changed while it was away).
@@ -277,6 +305,10 @@ class AppState extends ChangeNotifier {
 
   // ── Initialization ──
   Future<void> initialize() async {
+    final prefs = await SharedPreferences.getInstance();
+    _prefs = prefs;
+    _selectedLanguageCode = prefs.getString(_keyLanguageCode);
+
     MonitunePlatform.onShizukuPermissionResult = (_) => refreshStatus();
     MonitunePlatform.onDisplayCountdownTimeout = () async {
       _isTestingResolution = false;

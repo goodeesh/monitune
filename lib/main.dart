@@ -6,6 +6,7 @@ import 'package:monitune/state/app_state.dart';
 import 'package:monitune/services/platform_bridge.dart';
 import 'package:monitune/screens/onboarding/onboarding_flow.dart';
 import 'package:monitune/screens/home_screen.dart';
+import 'package:monitune/l10n/l10n.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,14 +54,19 @@ class _MonituneAppState extends State<MonituneApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    // Only rebuild MaterialApp when the appearance actually changes, so a
-    // status refresh does not rebuild the whole tree.
-    final appearance =
-        context.select<AppState, ({Color seed, double contrast, DynamicSchemeVariant palette})>(
+    final appearance = context.select<
+        AppState,
+        ({
+          Color seed,
+          double contrast,
+          DynamicSchemeVariant palette,
+          Locale? locale,
+        })>(
       (state) => (
         seed: state.activeSeed,
         contrast: state.contrastLevel,
         palette: state.paletteVariant,
+        locale: state.appLocale,
       ),
     );
 
@@ -74,6 +80,9 @@ class _MonituneAppState extends State<MonituneApp> with WidgetsBindingObserver {
       ),
       themeAnimationDuration: const Duration(milliseconds: 400),
       themeAnimationCurve: Curves.easeOutCubic,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: appearance.locale,
       home: Consumer<AppState>(
         builder: (context, state, _) {
           return state.onboardingComplete ? const HomeScreen() : const OnboardingFlow();
