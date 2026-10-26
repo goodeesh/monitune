@@ -27,12 +27,28 @@ class ArbTemplate {
   static ArbTemplate parse(String content, {String filePath = 'app_en.arb'}) {
     final dynamic decoded = jsonDecode(content);
     if (decoded is! Map<String, dynamic>) {
-      throw FormatException('Root of ARB file must be a JSON object: $filePath');
+      throw FormatException(
+        'Root of ARB file must be a JSON object: $filePath',
+      );
     }
 
     final locale = decoded['@@locale'] as String?;
     if (locale == null || locale.trim().isEmpty) {
-      throw FormatException('Missing "@@locale" in canonical template: $filePath');
+      throw FormatException(
+        'Missing "@@locale" in canonical template: $filePath',
+      );
+    }
+
+    final filename = File(filePath).uri.pathSegments
+        .lastWhere((s) => s.isNotEmpty, orElse: () => '');
+    final fileMatch = L10nValidator.arbFilePattern.firstMatch(filename);
+    if (fileMatch != null) {
+      final expectedLocale = fileMatch.group(1);
+      if (expectedLocale != null && locale != expectedLocale) {
+        throw FormatException(
+          'Declared @@locale "$locale" does not match filename locale "$expectedLocale" in $filePath',
+        );
+      }
     }
 
     final placeholderRegex = RegExp(r'\{([a-zA-Z0-9_]+)\}');
@@ -46,7 +62,8 @@ class ArbTemplate {
       final value = entry.value;
       if (value is! String) {
         throw FormatException(
-            'Key "$key" value must be a string, got ${value.runtimeType} in $filePath');
+          'Key "$key" value must be a string, got ${value.runtimeType} in $filePath',
+        );
       }
       final placeholders = placeholderRegex
           .allMatches(value)
@@ -55,11 +72,7 @@ class ArbTemplate {
       keys[key] = placeholders;
     }
 
-    return ArbTemplate(
-      filePath: filePath,
-      locale: locale,
-      keys: keys,
-    );
+    return ArbTemplate(filePath: filePath, locale: locale, keys: keys);
   }
 }
 
@@ -109,16 +122,18 @@ class ValidationReport {
   });
 
   bool get isValid =>
-      templateError == null &&
-      targetResults.every((result) => result.isValid);
+      templateError == null && targetResults.every((result) => result.isValid);
 }
 
 /// Validates ARB files against canonical template for key parity and placeholder integrity.
 class L10nValidator {
   static final RegExp _placeholderRegex = RegExp(r'\{([a-zA-Z0-9_]+)\}');
-  static final RegExp _arbFilePattern = RegExp(r'^app_([a-zA-Z0-9_-]+)\.arb$');
+  static final RegExp arbFilePattern = RegExp(r'^app_([a-zA-Z0-9_-]+)\.arb$');
 
-  static ArbTemplate parseTemplate(String jsonContent, {String filePath = 'app_en.arb'}) {
+  static ArbTemplate parseTemplate(
+    String jsonContent, {
+    String filePath = 'app_en.arb',
+  }) {
     return ArbTemplate.parse(jsonContent, filePath: filePath);
   }
 
@@ -148,6 +163,18 @@ class L10nValidator {
     final locale = decoded['@@locale'] as String?;
     if (locale == null || locale.trim().isEmpty) {
       errors.add('Missing "@@locale" property');
+    } else if (filePath.isNotEmpty) {
+      final filename = File(filePath).uri.pathSegments
+          .lastWhere((s) => s.isNotEmpty, orElse: () => '');
+      final fileMatch = arbFilePattern.firstMatch(filename);
+      if (fileMatch != null) {
+        final expectedLocale = fileMatch.group(1);
+        if (expectedLocale != null && locale != expectedLocale) {
+          errors.add(
+            'Declared @@locale "$locale" does not match filename locale "$expectedLocale"',
+          );
+        }
+      }
     }
 
     final targetKeys = <String, Set<String>>{};
@@ -158,7 +185,9 @@ class L10nValidator {
       }
       final value = entry.value;
       if (value is! String) {
-        errors.add('Key "$key" value must be a string (found ${value.runtimeType})');
+        errors.add(
+          'Key "$key" value must be a string (found ${value.runtimeType})',
+        );
         continue;
       }
       final placeholders = _placeholderRegex
@@ -240,16 +269,20 @@ class L10nValidator {
     } catch (e) {
       return ValidationReport(
         directory: l10nDir,
-        templateError: 'Error parsing canonical template (${templateFile.path}): $e',
+        templateError:
+            'Error parsing canonical template (${templateFile.path}): $e',
       );
     }
 
     final targetFiles = <File>[];
     for (final entity in l10nDir.listSync()) {
       if (entity is! File) continue;
-      final fileName = entity.uri.pathSegments.lastWhere((s) => s.isNotEmpty, orElse: () => '');
+      final fileName = entity.uri.pathSegments.lastWhere(
+        (s) => s.isNotEmpty,
+        orElse: () => '',
+      );
       if (fileName == 'app_en.arb') continue;
-      if (_arbFilePattern.hasMatch(fileName)) {
+      if (arbFilePattern.hasMatch(fileName)) {
         targetFiles.add(entity);
       }
     }
@@ -260,12 +293,16 @@ class L10nValidator {
     for (final file in targetFiles) {
       try {
         final content = file.readAsStringSync();
-        targetResults.add(validateLocaleContent(content, template, filePath: file.path));
+        targetResults.add(
+          validateLocaleContent(content, template, filePath: file.path),
+        );
       } catch (e) {
-        targetResults.add(ArbFileValidation(
-          filePath: file.path,
-          syntaxErrors: ['Failed to read file: $e'],
-        ));
+        targetResults.add(
+          ArbFileValidation(
+            filePath: file.path,
+            syntaxErrors: ['Failed to read file: $e'],
+          ),
+        );
       }
     }
 
@@ -274,6 +311,23 @@ class L10nValidator {
       template: template,
       targetResults: targetResults,
     );
+  }
+
+  static Directory resolveDirectory(List<String> args) {
+    if (args.isNotEmpty) {
+      return Directory(args.first);
+    }
+
+    const defaultDir = 'lib/l10n';
+    final dir = Directory(defaultDir);
+    if (dir.existsSync()) return dir;
+
+    // Try relative to tool/ location
+    final scriptRelative = File(Platform.script.toFilePath()).parent.parent;
+    final fallbackDir = Directory('${scriptRelative.path}/lib/l10n');
+    if (fallbackDir.existsSync()) return fallbackDir;
+
+    return Directory(defaultDir);
   }
 }
 
@@ -287,23 +341,36 @@ class _Ansi {
   String bold(String text) => enabled ? '\x1B[1m$text\x1B[0m' : text;
 }
 
-void printReport(ValidationReport report, {required IOSink sink, bool? useColor}) {
-  final bool enableColor = useColor ?? (stdout.hasTerminal && stdout.supportsAnsiEscapes);
+void printReport(
+  ValidationReport report, {
+  required IOSink sink,
+  bool? useColor,
+}) {
+  final bool enableColor =
+      useColor ?? (stdout.hasTerminal && stdout.supportsAnsiEscapes);
   final ansi = _Ansi(enableColor);
 
   sink.writeln(ansi.bold('=== ARB Parity & Integrity Validator ==='));
 
   if (report.templateError != null) {
-    sink.writeln(ansi.red('✗ Canonical template error: ${report.templateError}'));
+    sink.writeln(
+      ansi.red('✗ Canonical template error: ${report.templateError}'),
+    );
     sink.writeln(ansi.red('Verification failed!'));
     return;
   }
 
   final template = report.template!;
-  sink.writeln('${ansi.green('✓')} Canonical template: ${template.filePath} (${template.locale}) [${template.keys.length} keys]');
+  sink.writeln(
+    '${ansi.green('✓')} Canonical template: ${template.filePath} (${template.locale}) [${template.keys.length} keys]',
+  );
 
   if (report.targetResults.isEmpty) {
-    sink.writeln(ansi.yellow('ℹ No additional target catalogs found in ${report.directory.path} (0 target catalogs checked).'));
+    sink.writeln(
+      ansi.yellow(
+        'ℹ No additional target catalogs found in ${report.directory.path} (0 target catalogs checked).',
+      ),
+    );
     sink.writeln('${ansi.green('✓')} Template valid and self-consistent.');
     return;
   }
@@ -311,10 +378,14 @@ void printReport(ValidationReport report, {required IOSink sink, bool? useColor}
   int failedCatalogs = 0;
   for (final result in report.targetResults) {
     if (result.isValid) {
-      sink.writeln('${ansi.green('✓')} ${result.filePath} (${result.locale}): all ${template.keys.length} keys match');
+      sink.writeln(
+        '${ansi.green('✓')} ${result.filePath} (${result.locale}): all ${template.keys.length} keys match',
+      );
     } else {
       failedCatalogs++;
-      sink.writeln('${ansi.red('✗')} ${result.filePath} (${result.locale ?? 'unknown'}): ${result.totalErrors} issue(s) detected:');
+      sink.writeln(
+        '${ansi.red('✗')} ${result.filePath} (${result.locale ?? 'unknown'}): ${result.totalErrors} issue(s) detected:',
+      );
 
       if (result.syntaxErrors.isNotEmpty) {
         sink.writeln('  Syntax & metadata errors:');
@@ -338,12 +409,18 @@ void printReport(ValidationReport report, {required IOSink sink, bool? useColor}
       }
 
       if (result.placeholderMismatches.isNotEmpty) {
-        sink.writeln('  Placeholder mismatches (${result.placeholderMismatches.length}):');
+        sink.writeln(
+          '  Placeholder mismatches (${result.placeholderMismatches.length}):',
+        );
         for (final entry in result.placeholderMismatches.entries) {
           final key = entry.key;
           final mismatch = entry.value;
-          final expStr = mismatch.expected.isEmpty ? '(none)' : mismatch.expected.map((s) => '{$s}').join(', ');
-          final foundStr = mismatch.found.isEmpty ? '(none)' : mismatch.found.map((s) => '{$s}').join(', ');
+          final expStr = mismatch.expected.isEmpty
+              ? '(none)'
+              : mismatch.expected.map((s) => '{$s}').join(', ');
+          final foundStr = mismatch.found.isEmpty
+              ? '(none)'
+              : mismatch.found.map((s) => '{$s}').join(', ');
           sink.writeln('    - "$key": expected $expStr, found $foundStr');
         }
       }
@@ -352,32 +429,22 @@ void printReport(ValidationReport report, {required IOSink sink, bool? useColor}
 
   sink.writeln();
   if (failedCatalogs == 0) {
-    sink.writeln(ansi.green('SUCCESS: All ${report.targetResults.length} target catalog(s) passed parity & placeholder checks!'));
+    sink.writeln(
+      ansi.green(
+        'SUCCESS: All ${report.targetResults.length} target catalog(s) passed parity & placeholder checks!',
+      ),
+    );
   } else {
-    sink.writeln(ansi.red('FAILURE: $failedCatalogs of ${report.targetResults.length} target catalog(s) failed validation.'));
+    sink.writeln(
+      ansi.red(
+        'FAILURE: $failedCatalogs of ${report.targetResults.length} target catalog(s) failed validation.',
+      ),
+    );
   }
-}
-
-Directory _resolveL10nDirectory(List<String> args) {
-  if (args.isNotEmpty) {
-    final candidate = Directory(args.first);
-    if (candidate.existsSync()) return candidate;
-  }
-
-  const defaultDir = 'lib/l10n';
-  final dir = Directory(defaultDir);
-  if (dir.existsSync()) return dir;
-
-  // Try relative to tool/ location
-  final scriptRelative = File(Platform.script.toFilePath()).parent.parent;
-  final fallbackDir = Directory('${scriptRelative.path}/lib/l10n');
-  if (fallbackDir.existsSync()) return fallbackDir;
-
-  return Directory(defaultDir);
 }
 
 void main(List<String> args) {
-  final l10nDir = _resolveL10nDirectory(args);
+  final l10nDir = L10nValidator.resolveDirectory(args);
   final report = L10nValidator.validateDirectory(l10nDir);
 
   printReport(report, sink: stdout);
