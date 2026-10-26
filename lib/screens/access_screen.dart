@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:monitune/l10n/l10n.dart';
 import 'package:monitune/state/app_state.dart';
 import 'package:monitune/theme/mono_motion.dart';
 import 'package:monitune/theme/mono_tokens.dart';
@@ -24,7 +25,7 @@ class _AccessScreenState extends State<AccessScreen> {
     return Scaffold(
       backgroundColor: tokens.surface,
       appBar: AppBar(
-        title: Text('Access & Permissions', style: tokens.headingMd),
+        title: Text(context.l10n.accessTitle, style: tokens.headingMd),
       ),
       body: DecoratedBox(
         decoration: BoxDecoration(gradient: tokens.backgroundGradient),
@@ -32,11 +33,11 @@ class _AccessScreenState extends State<AccessScreen> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
             children: [
-              sectionTitle(context, 'Privileged access'),
+              sectionTitle(context, context.l10n.accessSectionPrivileged),
               const SizedBox(height: 10),
               _shizukuCard(context, state),
               const SizedBox(height: 24),
-              sectionTitle(context, 'Special permissions'),
+              sectionTitle(context, context.l10n.accessSectionSpecial),
               const SizedBox(height: 10),
               card(
                 context,
@@ -44,17 +45,17 @@ class _AccessScreenState extends State<AccessScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Force Landscape needs both of these.', style: tokens.bodySm),
+                    Text(context.l10n.accessForceLandscapeHint, style: tokens.bodySm),
                     const SizedBox(height: 10),
                     permRow(
                       context,
-                      label: 'Display over other apps',
+                      label: context.l10n.accessPermDisplayOverApps,
                       ok: state.hasOverlayPermission,
                       onGrant: state.requestOverlayPermission,
                     ),
                     permRow(
                       context,
-                      label: 'Modify system settings',
+                      label: context.l10n.accessPermModifySettings,
                       ok: state.hasWriteSettingsPermission,
                       onGrant: state.requestWriteSettingsPermission,
                     ),
@@ -62,7 +63,7 @@ class _AccessScreenState extends State<AccessScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-              sectionTitle(context, 'Background'),
+              sectionTitle(context, context.l10n.accessSectionBackground),
               const SizedBox(height: 10),
               card(
                 context,
@@ -71,13 +72,13 @@ class _AccessScreenState extends State<AccessScreen> {
                   children: [
                     permRow(
                       context,
-                      label: 'Battery optimization exemption',
+                      label: context.l10n.accessPermBatteryOptimization,
                       ok: !state.isBatteryOptimized,
                       onGrant: state.requestBatteryOptimization,
                     ),
                     permRow(
                       context,
-                      label: 'Notifications (auto-apply watcher)',
+                      label: context.l10n.accessPermNotifications,
                       ok: state.hasNotificationPermission,
                       onGrant: state.requestNotificationPermission,
                     ),
@@ -105,28 +106,28 @@ class _AccessScreenState extends State<AccessScreen> {
 
     if (hasWss) {
       statusColor = tokens.success;
-      title = 'Permanent Access Active';
-      subtitle = 'Works with no Shizuku, ADB or Wi-Fi.';
+      title = context.l10n.accessPermanentTitle;
+      subtitle = context.l10n.accessPermanentSubtitle;
       icon = Icons.lock_open_rounded;
     } else if (isGranted) {
       statusColor = tokens.success;
-      title = 'Shizuku Privileged Access Active';
-      subtitle = 'Grant permanent access once to run without Shizuku afterwards.';
+      title = context.l10n.accessShizukuActiveTitle;
+      subtitle = context.l10n.accessShizukuActiveSubtitle;
       icon = Icons.check_circle_rounded;
     } else if (hasRoot) {
       statusColor = tokens.success;
-      title = 'Root (su) Access Available';
-      subtitle = 'Display changes will be executed via root.';
+      title = context.l10n.accessRootActiveTitle;
+      subtitle = context.l10n.accessRootActiveSubtitle;
       icon = Icons.security_rounded;
     } else if (isAvailable) {
       statusColor = tokens.warning;
-      title = 'Shizuku Detected — Permission Required';
-      subtitle = 'Authorize once, then grant permanent access.';
+      title = context.l10n.accessShizukuRequiredTitle;
+      subtitle = context.l10n.accessShizukuRequiredSubtitle;
       icon = Icons.vpn_key_rounded;
     } else {
       statusColor = tokens.textMuted;
-      title = 'No Privileged Access';
-      subtitle = 'Start Shizuku via wireless debugging, or use root, to enable changes.';
+      title = context.l10n.accessNoAccessTitle;
+      subtitle = context.l10n.accessNoAccessSubtitle;
       icon = Icons.info_outline_rounded;
     }
 
@@ -175,12 +176,12 @@ class _AccessScreenState extends State<AccessScreen> {
                 width: double.infinity,
                 child: FilledButton.icon(
                   icon: const Icon(Icons.verified_user_rounded, size: 18),
-                  label: const Text('Authorize with Shizuku'),
+                  label: Text(context.l10n.accessAuthorizeShizuku),
                   onPressed: () async {
                     await state.requestShizukuPermission();
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Shizuku permission requested.')),
+                      SnackBar(content: Text(context.l10n.accessShizukuRequested)),
                     );
                   },
                 ),
@@ -199,20 +200,21 @@ class _AccessScreenState extends State<AccessScreen> {
                           color: Theme.of(context).colorScheme.onPrimary,
                         )
                       : const Icon(Icons.lock_outline_rounded, size: 18),
-                  label: const Text('Grant Permanent Access (no Shizuku afterwards)'),
+                  label: Text(context.l10n.accessGrantPermanent),
                   onPressed: _grantingWss
                       ? null
                       : () async {
-                          setState(() => _grantingWss = true);
                           final messenger = ScaffoldMessenger.of(context);
+                          final l10n = context.l10n;
+                          setState(() => _grantingWss = true);
                           final ok = await state.selfGrantWriteSecureSettings();
                           if (!mounted) return;
                           setState(() => _grantingWss = false);
                           messenger.showSnackBar(
                             SnackBar(
                               content: Text(ok
-                                  ? 'Permanent display access granted!'
-                                  : 'Grant failed. Is Shizuku running and authorized?'),
+                                  ? l10n.accessPermanentGranted
+                                  : l10n.accessPermanentFailed),
                             ),
                           );
                         },

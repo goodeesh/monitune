@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:monitune/l10n/l10n.dart';
 import 'package:monitune/services/update_checker.dart';
 import 'package:monitune/state/app_state.dart';
 import 'package:monitune/theme/mono_motion.dart';
@@ -77,11 +78,12 @@ class _AppInfoSheetState extends State<AppInfoSheet> {
 
   Future<void> _open(String url) async {
     final messenger = ScaffoldMessenger.of(context);
+    final l10n = context.l10n;
     final uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      messenger.showSnackBar(const SnackBar(content: Text('No browser available.')));
+      messenger.showSnackBar(SnackBar(content: Text(l10n.infoNoBrowser)));
     }
   }
 
@@ -115,12 +117,12 @@ class _AppInfoSheetState extends State<AppInfoSheet> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('MoniTune', style: tokens.headingSm),
+                      Text(context.l10n.appTitle, style: tokens.headingSm),
                       const SizedBox(height: 2),
                       Text(
                         _buildNumber.isEmpty
-                            ? 'Version $_version'
-                            : 'Version $_version · build $_buildNumber',
+                            ? context.l10n.infoVersion(_version)
+                            : context.l10n.infoVersionWithBuild(_version, _buildNumber),
                         style: tokens.bodySm,
                       ),
                     ],
@@ -136,7 +138,7 @@ class _AppInfoSheetState extends State<AppInfoSheet> {
                   icon: _checking
                       ? MorphingLoader(size: 18, color: scheme.onPrimary)
                       : const Icon(Icons.system_update_alt_rounded, size: 18),
-                  label: Text(_checking ? 'Checking…' : 'Check for updates'),
+                  label: Text(_checking ? context.l10n.infoChecking : context.l10n.infoCheckForUpdates),
                   onPressed: _checking ? null : _check,
                 ),
               ),
@@ -151,19 +153,19 @@ class _AppInfoSheetState extends State<AppInfoSheet> {
             _row(
               context,
               icon: Icons.inventory_2_outlined,
-              label: 'Distributed via GitHub Releases',
+              label: context.l10n.infoDistributedVia,
               onTap: () => _open(_releasesUrl),
             ),
             _row(
               context,
               icon: Icons.balance_rounded,
-              label: 'MIT licensed · source available',
+              label: context.l10n.infoMitLicense,
               onTap: () => _open('https://github.com/goodeesh/monitune'),
             ),
             _row(
               context,
               icon: Icons.wifi_off_rounded,
-              label: 'Nothing leaves this device unless you check for updates',
+              label: context.l10n.infoPrivacyNotice,
               onTap: null,
             ),
           ],
@@ -243,7 +245,7 @@ class _ResultCard extends StatelessWidget {
                 width: double.infinity,
                 child: FilledButton.icon(
                   icon: const Icon(Icons.open_in_new_rounded, size: 18),
-                  label: const Text('Open release page'),
+                  label: Text(context.l10n.infoOpenReleasePage),
                   onPressed: () => onDownload(outcome.url!),
                 ),
               ),

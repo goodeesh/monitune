@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:monitune/l10n/l10n.dart';
 import 'package:monitune/theme/mono_motion.dart';
 import 'package:monitune/theme/mono_tokens.dart';
 import 'package:monitune/theme/monitune_theme.dart';
@@ -119,7 +120,7 @@ Widget permRow(
               shape: const StadiumBorder(),
             ),
             onPressed: onGrant,
-            child: const Text('Grant'),
+            child: Text(context.l10n.commonGrant),
           ),
       ],
     ),

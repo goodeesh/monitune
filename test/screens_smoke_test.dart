@@ -36,6 +36,10 @@ void main() {
     expect(state.appLocale, const Locale('pt', 'BR'));
     expect(state.selectedLanguageCode, 'pt_BR');
 
+    await state.setLanguage('pt-BR');
+    expect(state.appLocale, const Locale('pt', 'BR'));
+    expect(state.selectedLanguageCode, 'pt-BR');
+
     await state.setLanguage(null);
     expect(state.appLocale, isNull);
     expect(state.selectedLanguageCode, isNull);
@@ -46,9 +50,10 @@ void main() {
     expect(state3.selectedLanguageCode, isNull);
   });
 
-  Widget wrap(Widget child, {Color seed = MoniTuneTheme.fallbackSeed}) {
-    return ChangeNotifierProvider(
-      create: (_) => AppState(),
+  Widget wrap(Widget child, {Color seed = MoniTuneTheme.fallbackSeed, AppState? state}) {
+    final appState = state ?? AppState();
+    return ChangeNotifierProvider<AppState>.value(
+      value: appState,
       child: MaterialApp(
         theme: MoniTuneTheme.build(seed: seed),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -146,4 +151,27 @@ void main() {
     await settle(tester);
     expect(tester.takeException(), isNull);
   });
+
+  testWidgets('display screen renders language selector and changes language', (tester) async {
+    final state = AppState();
+    await tester.pumpWidget(wrap(const DisplayScreen(), state: state));
+    await settle(tester);
+
+    await tester.scrollUntilVisible(find.text('Language'), 300);
+    await settle(tester);
+    expect(find.text('Language'), findsOneWidget);
+
+    await tester.tap(find.text('Language'));
+    await settle(tester);
+
+    expect(find.text('System default'), findsWidgets);
+    expect(find.text('English'), findsOneWidget);
+    expect(find.text('Português (Brasil)'), findsOneWidget);
+
+    await tester.tap(find.text('Português (Brasil)'));
+    await settle(tester);
+
+    expect(state.selectedLanguageCode, 'pt_BR');
+  });
 }
+

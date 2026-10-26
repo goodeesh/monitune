@@ -196,7 +196,7 @@ class AppState extends ChangeNotifier {
 
   Locale? get appLocale {
     if (_selectedLanguageCode == null) return null;
-    final parts = _selectedLanguageCode!.split('_');
+    final parts = _selectedLanguageCode!.split(RegExp(r'[-_]'));
     if (parts.length > 1) {
       return Locale(parts[0], parts[1]);
     }

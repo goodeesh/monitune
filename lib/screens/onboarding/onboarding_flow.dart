@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:monitune/l10n/l10n.dart';
 import 'package:monitune/state/app_state.dart';
 import 'package:monitune/theme/mono_motion.dart';
 import 'package:monitune/theme/mono_tokens.dart';
@@ -77,7 +78,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                   children: [
                     TextButton(
                       onPressed: () => context.read<AppState>().completeOnboarding(),
-                      child: Text('Skip', style: tokens.bodyMd),
+                      child: Text(context.l10n.onboardingSkip, style: tokens.bodyMd),
                     ),
                   ],
                 ),
@@ -127,7 +128,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                         child: SpringPress(
                           child: OutlinedButton(
                             onPressed: _back,
-                            child: const Text('Back'),
+                            child: Text(context.l10n.onboardingBack),
                           ),
                         ),
                       ),
@@ -138,7 +139,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
                       child: SpringPress(
                         child: FilledButton(
                           onPressed: _next,
-                          child: Text(isLast ? 'Get Started' : 'Next'),
+                          child: Text(isLast ? context.l10n.onboardingGetStarted : context.l10n.onboardingNext),
                         ),
                       ),
                     ),
@@ -233,69 +234,62 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
   // ── Pages ──
   Widget _welcome() => _page(
         icon: Icons.monitor_rounded,
-        title: 'Welcome to MoniTune',
-        body:
-            'Tune your Android display for any external monitor. Set the resolution '
-            'and scale you want, keep your home screen tidy, and force widescreen '
-            'landscape — all from one small app.',
+        title: context.l10n.onboardingWelcomeTitle,
+        body: context.l10n.onboardingWelcomeBody,
         extra: [
-          _bullet(Icons.aspect_ratio_rounded, 'Resolution & UI scale presets'),
-          _bullet(Icons.home_work_rounded, 'MIUI/HyperOS launcher-safe mode'),
-          _bullet(Icons.palette_rounded, 'Colours that follow your wallpaper'),
+          _bullet(Icons.aspect_ratio_rounded, context.l10n.onboardingWelcomeBullet1),
+          _bullet(Icons.home_work_rounded, context.l10n.onboardingWelcomeBullet2),
+          _bullet(Icons.palette_rounded, context.l10n.onboardingWelcomeBullet3),
         ],
       );
 
   Widget _problem() => _page(
         icon: Icons.lock_outline_rounded,
-        title: 'Android locks this down',
-        body:
-            'When you mirror your phone to a monitor, Android picks the resolution, '
-            'density and rotation for you — and normal apps are not allowed to change them.',
+        title: context.l10n.onboardingProblemTitle,
+        body: context.l10n.onboardingProblemBody,
         extra: [
           _bullet(
             Icons.warning_amber_rounded,
-            'Changing density on Xiaomi MIUI/HyperOS can scatter your home-screen icons onto other pages.',
+            context.l10n.onboardingProblemBullet1,
             color: context.tokens.warning,
           ),
-          _bullet(Icons.crop_free_rounded, 'No built-in way to remove black bars or pick a widescreen size.'),
+          _bullet(Icons.crop_free_rounded, context.l10n.onboardingProblemBullet2),
         ],
       );
 
   Widget _why() => _page(
         icon: Icons.admin_panel_settings_rounded,
-        title: 'Why Shizuku or root?',
-        body:
-            'The operations MoniTune performs need a permission called '
-            'WRITE_SECURE_SETTINGS, which Android only grants to privileged apps.',
+        title: context.l10n.onboardingWhyTitle,
+        body: context.l10n.onboardingWhyBody,
         extra: [
           _bullet(
             Icons.terminal_rounded,
-            'Shizuku runs a shell with the privileges you grant over wireless debugging — no root needed.',
+            context.l10n.onboardingWhyBullet1,
           ),
-          _bullet(Icons.security_rounded, 'If your phone is rooted, MoniTune can use root directly instead.'),
+          _bullet(Icons.security_rounded, context.l10n.onboardingWhyBullet2),
           _bullet(
             Icons.info_outline_rounded,
-            'Nothing is hidden: MoniTune only uses this access to change display size, density and rotation.',
+            context.l10n.onboardingWhyBullet3,
           ),
         ],
       );
 
   Widget _paths() => _page(
         icon: Icons.alt_route_rounded,
-        title: 'Pick your path',
-        body: 'Either path unlocks the same features.',
+        title: context.l10n.onboardingPathsTitle,
+        body: context.l10n.onboardingPathsBody,
         extra: [
           _pathCard(
             icon: Icons.terminal_rounded,
-            title: 'Shizuku (no root)',
-            subtitle: 'Recommended for most phones. Requires one-time setup with wireless debugging.',
+            title: context.l10n.onboardingPathsShizukuTitle,
+            subtitle: context.l10n.onboardingPathsShizukuSubtitle,
             color: context.tokens.primary,
           ),
           const SizedBox(height: 12),
           _pathCard(
             icon: Icons.security_rounded,
-            title: 'Root (Magisk / KernelSU)',
-            subtitle: 'If your device is already rooted, MoniTune detects it automatically.',
+            title: context.l10n.onboardingPathsRootTitle,
+            subtitle: context.l10n.onboardingPathsRootSubtitle,
             color: context.tokens.accent,
           ),
         ],
@@ -345,18 +339,18 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
 
   Widget _shizukuSteps() => _page(
         icon: Icons.download_rounded,
-        title: 'Setting up Shizuku',
-        body: 'Install Shizuku, then start it once. MoniTune will guide you from there.',
+        title: context.l10n.onboardingShizukuStepsTitle,
+        body: context.l10n.onboardingShizukuStepsBody,
         extra: [
-          _step('1', 'Install Shizuku from the official site or GitHub Releases.'),
-          _step('2', 'Open Shizuku and start it via Wireless debugging (Android 11+) or ADB.'),
-          _step('3', 'Return to MoniTune and tap "Authorize with Shizuku".'),
+          _step('1', context.l10n.onboardingShizukuStep1),
+          _step('2', context.l10n.onboardingShizukuStep2),
+          _step('3', context.l10n.onboardingShizukuStep3),
           const SizedBox(height: 8),
           SpringPress(
             child: OutlinedButton.icon(
               onPressed: () => _open('https://shizuku.rikka.app/guide/setup/'),
               icon: const Icon(Icons.open_in_new_rounded, size: 18),
-              label: const Text('Open Shizuku setup guide'),
+              label: Text(context.l10n.onboardingShizukuGuideButton),
             ),
           ),
         ],
@@ -388,60 +382,55 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
 
   Widget _oneTime() => _page(
         icon: Icons.lock_open_rounded,
-        title: 'One-time setup',
-        body:
-            'While Shizuku (or root) is available, MoniTune can grant itself a '
-            'permanent WRITE_SECURE_SETTINGS permission.',
+        title: context.l10n.onboardingOneTimeTitle,
+        body: context.l10n.onboardingOneTimeBody,
         extra: [
           _bullet(
             Icons.check_circle_rounded,
-            'Grant it once — afterwards MoniTune works with no Shizuku, no ADB and no Wi-Fi.',
+            context.l10n.onboardingOneTimeBullet1,
             color: context.tokens.success,
           ),
-          _bullet(Icons.restart_alt_rounded, 'The grant survives reboots.'),
-          _bullet(Icons.timer_rounded, 'Shizuku only needs to be running for that single moment.'),
+          _bullet(Icons.restart_alt_rounded, context.l10n.onboardingOneTimeBullet2),
+          _bullet(Icons.timer_rounded, context.l10n.onboardingOneTimeBullet3),
         ],
       );
 
   Widget _safety() => _page(
         icon: Icons.health_and_safety_rounded,
-        title: 'Built-in safety',
-        body: 'Changing display size can leave a screen unreadable, so MoniTune protects you.',
+        title: context.l10n.onboardingSafetyTitle,
+        body: context.l10n.onboardingSafetyBody,
         extra: [
           _bullet(
             Icons.timer_outlined,
-            'Test mode auto-reverts after 15 seconds unless you tap "Keep Settings".',
+            context.l10n.onboardingSafetyBullet1,
           ),
           _bullet(
             Icons.power_settings_new_rounded,
-            'Turning the screen off restores your native resolution automatically.',
+            context.l10n.onboardingSafetyBullet2,
           ),
           _bullet(
             Icons.home_work_rounded,
-            'Launcher-safe mode skips density changes so MIUI/HyperOS icons stay put.',
+            context.l10n.onboardingSafetyBullet3,
           ),
         ],
       );
 
   Widget _ready() => _page(
         icon: Icons.rocket_launch_rounded,
-        title: 'You are ready',
-        body:
-            'Set up your privileged access and the two special permissions next. '
-            'Then choose your resolution and scale, and test with the 15-second '
-            'safety revert before keeping your settings.',
+        title: context.l10n.onboardingReadyTitle,
+        body: context.l10n.onboardingReadyBody,
         extra: [
           _bullet(
             Icons.sync_rounded,
-            'Auto-apply: apply your profile the moment a monitor connects, and reset when it unplugs.',
+            context.l10n.onboardingReadyBullet1,
           ),
           _bullet(
             Icons.crop_landscape_rounded,
-            'Force Landscape overrides every app\'s orientation — including the HyperOS launcher (Android 12+).',
+            context.l10n.onboardingReadyBullet2,
           ),
           _bullet(
             Icons.palette_rounded,
-            'On Android 12+, MoniTune can take its colours from your wallpaper (Material You).',
+            context.l10n.onboardingReadyBullet3,
           ),
           const SizedBox(height: 16),
           SpringPress(
@@ -449,7 +438,7 @@ class _OnboardingFlowState extends State<OnboardingFlow> {
               width: double.infinity,
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.verified_user_rounded, size: 18),
-                label: const Text('Set up access now'),
+                label: Text(context.l10n.onboardingReadyButton),
                 onPressed: () {
                   final state = context.read<AppState>();
                   state.completeOnboarding();

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:monitune/l10n/l10n.dart';
 import 'package:monitune/state/app_state.dart';
 import 'package:monitune/theme/mono_motion.dart';
 import 'package:monitune/theme/mono_tokens.dart';
@@ -19,17 +20,39 @@ class _DisplayScreenState extends State<DisplayScreen> {
   late TextEditingController _widthController;
   late TextEditingController _heightController;
 
-  final List<Map<String, dynamic>> _resolutionPresets = [
-    {'id': '1080p', 'label': '1080p Full HD (1920 × 1080)'},
-    {'id': '1440p', 'label': '1440p 2K (2560 × 1440)'},
-    {'id': '4K', 'label': '4K Ultra HD (3840 × 2160)'},
-    {'id': '720p', 'label': '720p HD (1280 × 720)'},
-    {'id': 'ultrawide', 'label': 'Ultrawide 21:9 (2560 × 1080)'},
-    {'id': 'native', 'label': 'Native Phone Display'},
-    {'id': 'custom', 'label': 'Custom Resolution…'},
+  static const List<String> _resolutionPresetIds = [
+    '1080p',
+    '1440p',
+    '4K',
+    '720p',
+    'ultrawide',
+    'native',
+    'custom',
   ];
 
-  final List<int> _scalePresets = [75, 100, 125, 150, 175, 200];
+  static const List<int> _scalePresets = [75, 100, 125, 150, 175, 200];
+
+  static const List<({String? code, String name})> _supportedLanguages = [
+    (code: null, name: 'System default'),
+    (code: 'en', name: 'English'),
+    (code: 'pt_BR', name: 'Português (Brasil)'),
+    (code: 'zh_CN', name: '简体中文'),
+    (code: 'es', name: 'Español'),
+    (code: 'de', name: 'Deutsch'),
+    (code: 'fr', name: 'Français'),
+    (code: 'it', name: 'Italiano'),
+    (code: 'ja', name: '日本語'),
+    (code: 'ko', name: '한국어'),
+    (code: 'zh_TW', name: '繁體中文'),
+    (code: 'ru', name: 'Русский'),
+    (code: 'pl', name: 'Polski'),
+    (code: 'tr', name: 'Türkçe'),
+    (code: 'hi', name: 'हिन्दी'),
+    (code: 'ar', name: 'العربية'),
+    (code: 'id', name: 'Bahasa Indonesia'),
+    (code: 'nl', name: 'Nederlands'),
+    (code: 'vi', name: 'Tiếng Việt'),
+  ];
 
   @override
   void initState() {
@@ -46,6 +69,39 @@ class _DisplayScreenState extends State<DisplayScreen> {
     super.dispose();
   }
 
+  String _presetLabel(BuildContext context, String id) => switch (id) {
+        '1080p' => context.l10n.displayPreset1080p,
+        '1440p' => context.l10n.displayPreset1440p,
+        '4K' => context.l10n.displayPreset4k,
+        '720p' => context.l10n.displayPreset720p,
+        'ultrawide' => context.l10n.displayPresetUltrawide,
+        'native' => context.l10n.displayPresetNative,
+        'custom' => context.l10n.displayPresetCustom,
+        _ => id,
+      };
+
+  String _rotationLabel(BuildContext context, int rotation) => switch (rotation) {
+        1 => context.l10n.displayRotationLandscape90,
+        2 => context.l10n.displayRotationPortrait180,
+        3 => context.l10n.displayRotationLandscape270,
+        _ => context.l10n.displayRotationPortrait0,
+      };
+
+  String _currentLanguageLabel(BuildContext context, AppState state) {
+    if (state.selectedLanguageCode == null) {
+      return context.l10n.displayLanguageSystemDefaultSimple;
+    }
+    for (final lang in _supportedLanguages) {
+      if (lang.code == state.selectedLanguageCode ||
+          (lang.code != null &&
+              lang.code!.replaceAll('-', '_') ==
+                  state.selectedLanguageCode!.replaceAll('-', '_'))) {
+        return lang.name;
+      }
+    }
+    return state.selectedLanguageCode!;
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = context.watch<AppState>();
@@ -54,7 +110,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
     return Scaffold(
       backgroundColor: tokens.surface,
       appBar: AppBar(
-        title: Text('Display', style: tokens.headingMd),
+        title: Text(context.l10n.displayTitle, style: tokens.headingMd),
       ),
       body: DecoratedBox(
         decoration: BoxDecoration(gradient: tokens.backgroundGradient),
@@ -64,11 +120,11 @@ class _DisplayScreenState extends State<DisplayScreen> {
             children: [
               _currentDisplay(context, state),
               const SizedBox(height: 24),
-              sectionTitle(context, 'Target resolution'),
+              sectionTitle(context, context.l10n.displaySectionTargetResolution),
               const SizedBox(height: 10),
               _resolutionCard(context, state),
               const SizedBox(height: 24),
-              sectionTitle(context, 'Desktop UI scaling'),
+              sectionTitle(context, context.l10n.displaySectionDesktopUiScaling),
               const SizedBox(height: 10),
               _scalingCard(context, state),
               if (state.isMiuiLauncher) ...[
@@ -76,11 +132,11 @@ class _DisplayScreenState extends State<DisplayScreen> {
                 _miuiCard(context),
               ],
               const SizedBox(height: 24),
-              sectionTitle(context, 'Behaviour'),
+              sectionTitle(context, context.l10n.displaySectionBehaviour),
               const SizedBox(height: 10),
               _behaviourCard(context, state),
               const SizedBox(height: 24),
-              sectionTitle(context, 'Appearance'),
+              sectionTitle(context, context.l10n.displaySectionAppearance),
               const SizedBox(height: 10),
               _appearanceCard(context, state),
             ],
@@ -95,36 +151,35 @@ class _DisplayScreenState extends State<DisplayScreen> {
     final w = state.status['width'] ?? '—';
     final h = state.status['height'] ?? '—';
     final dpi = state.status['densityDpi'] ?? '—';
-    final rotation = _rotationLabel((state.status['rotation'] as num?)?.toInt() ?? 0);
+    final dpiInt = int.tryParse(dpi.toString());
+    final dpiText = dpiInt != null ? context.l10n.displayDiagDensityValue(dpiInt) : '$dpi DPI';
+    final rotation = _rotationLabel(context, (state.status['rotation'] as num?)?.toInt() ?? 0);
     return card(
       context,
       child: Column(
         children: [
-          _diagRow(context, 'Resolution', '$w × $h'),
+          _diagRow(context, context.l10n.displayDiagResolution, '$w × $h'),
           Divider(color: tokens.surfaceBorder, height: 22),
-          _diagRow(context, 'Density', '$dpi DPI'),
+          _diagRow(context, context.l10n.displayDiagDensity, dpiText),
           Divider(color: tokens.surfaceBorder, height: 22),
-          _diagRow(context, 'Rotation', rotation),
+          _diagRow(context, context.l10n.displayDiagRotation, rotation),
           Divider(color: tokens.surfaceBorder, height: 22),
-          _diagRow(context, 'External display', state.externalDisplayName ?? 'None connected'),
+          _diagRow(
+            context,
+            context.l10n.displayDiagExternalDisplay,
+            state.externalDisplayName ?? context.l10n.displayDiagNoneConnected,
+          ),
           Divider(color: tokens.surfaceBorder, height: 22),
-          _diagRow(context, 'Custom profile', state.isCustomDisplayActive ? 'Active' : 'Not applied'),
+          _diagRow(
+            context,
+            context.l10n.displayDiagCustomProfile,
+            state.isCustomDisplayActive
+                ? context.l10n.displayDiagActive
+                : context.l10n.displayDiagNotApplied,
+          ),
         ],
       ),
     );
-  }
-
-  String _rotationLabel(int rotation) {
-    switch (rotation) {
-      case 1:
-        return 'Landscape (90°)';
-      case 2:
-        return 'Portrait (180°)';
-      case 3:
-        return 'Landscape (270°)';
-      default:
-        return 'Portrait (0°)';
-    }
   }
 
   Widget _diagRow(BuildContext context, String label, String value) {
@@ -159,11 +214,11 @@ class _DisplayScreenState extends State<DisplayScreen> {
             initialValue: state.targetResolution,
             isExpanded: true,
             decoration: const InputDecoration(),
-            items: _resolutionPresets
-                .map((p) => DropdownMenuItem<String>(
-                      value: p['id'] as String,
+            items: _resolutionPresetIds
+                .map((id) => DropdownMenuItem<String>(
+                      value: id,
                       child: Text(
-                        p['label'] as String,
+                        _presetLabel(context, id),
                         style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -182,7 +237,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
                     controller: _widthController,
                     keyboardType: TextInputType.number,
                     style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
-                    decoration: const InputDecoration(labelText: 'Width (px)'),
+                    decoration: InputDecoration(labelText: context.l10n.displayWidthPx),
                     onChanged: (v) {
                       final parsed = int.tryParse(v);
                       if (parsed != null && parsed > 300) {
@@ -200,7 +255,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
                     controller: _heightController,
                     keyboardType: TextInputType.number,
                     style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
-                    decoration: const InputDecoration(labelText: 'Height (px)'),
+                    decoration: InputDecoration(labelText: context.l10n.displayHeightPx),
                     onChanged: (v) {
                       final parsed = int.tryParse(v);
                       if (parsed != null && parsed > 300) {
@@ -214,7 +269,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
           ],
           const SizedBox(height: 14),
           Text(
-            'Target canvas: ${effective.$1} × ${effective.$2} pixels',
+            context.l10n.displayTargetCanvas(effective.$1, effective.$2),
             style: tokens.bodySm.copyWith(color: tokens.primary),
           ),
         ],
@@ -233,7 +288,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
             children: [
               Expanded(
                 child: Text(
-                  '${state.uiScalePercent}% Scale Factor',
+                  context.l10n.displayScaleFactor(state.uiScalePercent),
                   style: tokens.headingSm,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -246,7 +301,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
                   borderRadius: BorderRadius.circular(MoniTuneTheme.radiusSm),
                 ),
                 child: Text(
-                  '${state.calculatedDpi} DPI',
+                  context.l10n.displayDpiValue(state.calculatedDpi),
                   style: tokens.bodySm.copyWith(
                     color: tokens.primary,
                     fontWeight: FontWeight.bold,
@@ -259,24 +314,23 @@ class _DisplayScreenState extends State<DisplayScreen> {
           MorphingSegmented<int>(
             value: state.uiScalePercent,
             items: _scalePresets,
-            labelBuilder: (scale) => '$scale%',
+            labelBuilder: (scale) => context.l10n.displayScalePercent(scale),
             onChanged: state.setUiScalePercent,
           ),
           const SizedBox(height: 12),
           Text(
-            '100% gives native PC density without enlarging mobile widgets.',
+            context.l10n.displayScaleNativeHint,
             style: tokens.bodySm,
           ),
           Divider(color: tokens.surfaceBorder, height: 26),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Keep Android UI Density (Launcher-Safe)',
+              context.l10n.displayKeepUiDensityTitle,
               style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
             ),
             subtitle: Text(
-              'Applies the resolution but leaves Android density untouched, so '
-              'MIUI/HyperOS home-screen icons stay put.',
+              context.l10n.displayKeepUiDensitySubtitle,
               style: tokens.bodySm,
             ),
             value: state.launcherSafeDisplay,
@@ -302,7 +356,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
-                  'HyperOS / MIUI Launcher Detected',
+                  context.l10n.displayMiuiDetectedTitle,
                   style: tokens.bodyMd.copyWith(
                     fontWeight: FontWeight.w600,
                     color: tokens.textPrimary,
@@ -313,14 +367,12 @@ class _DisplayScreenState extends State<DisplayScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            'Changing Android density can rearrange your home-screen icons and '
-            'scatter apps onto other pages. Turn on "Keep Android UI Density" '
-            'above to prevent this — the desktop resolution and mirroring are unaffected.',
+            context.l10n.displayMiuiDetectedMessage,
             style: tokens.bodySm.copyWith(color: tokens.textPrimary),
           ),
           const SizedBox(height: 8),
           Text(
-            'Tip: also enable Settings → Home screen → "Lock Home Screen Layout".',
+            context.l10n.displayMiuiDetectedTip,
             style: tokens.bodySm,
           ),
         ],
@@ -338,11 +390,14 @@ class _DisplayScreenState extends State<DisplayScreen> {
         children: [
           ListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text('Force Landscape', style: tokens.bodyMd.copyWith(color: tokens.textPrimary)),
+            title: Text(
+              context.l10n.displayForceLandscapeTitle,
+              style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
+            ),
             subtitle: Text(
               state.forceLandscape
-                  ? 'Enabled — applied when you tap Apply Test Profile (Home).'
-                  : 'Toggle it from the Home screen. Requires both landscape permissions.',
+                  ? context.l10n.displayForceLandscapeSubtitleEnabled
+                  : context.l10n.displayForceLandscapeSubtitleDisabled,
               style: tokens.bodySm,
             ),
             trailing: Icon(
@@ -357,11 +412,11 @@ class _DisplayScreenState extends State<DisplayScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Auto-Reset Resolution on Exit',
+              context.l10n.displayAutoResetOnExitTitle,
               style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
             ),
             subtitle: Text(
-              'Returns your phone to its native resolution when you are done.',
+              context.l10n.displayAutoResetOnExitSubtitle,
               style: tokens.bodySm,
             ),
             value: state.autoResetOnExit,
@@ -398,7 +453,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Material You colours',
+                      context.l10n.displayMaterialYouTitle,
                       style: tokens.bodyMd.copyWith(
                         color: tokens.textPrimary,
                         fontWeight: FontWeight.w600,
@@ -407,8 +462,8 @@ class _DisplayScreenState extends State<DisplayScreen> {
                     const SizedBox(height: 2),
                     Text(
                       state.usingWallpaperColors
-                          ? 'Following your wallpaper palette'
-                          : 'Using your chosen accent',
+                          ? context.l10n.displayMaterialYouFollowingWallpaper
+                          : context.l10n.displayMaterialYouUsingChosenAccent,
                       style: tokens.bodySm,
                     ),
                   ],
@@ -421,28 +476,28 @@ class _DisplayScreenState extends State<DisplayScreen> {
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
             title: Text(
-              'Use wallpaper colours',
+              context.l10n.displayUseWallpaperTitle,
               style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
             ),
             subtitle: Text(
               !state.wallpaperChecked
-                  ? 'Checking what your Android version supports…'
+                  ? context.l10n.displayUseWallpaperChecking
                   : wallpaperAvailable
-                      ? 'Applies the Material 3 expressive palette built from your wallpaper.'
-                      : 'Needs Android 12 or newer. Pick an accent below instead.',
+                      ? context.l10n.displayUseWallpaperSupported
+                      : context.l10n.displayUseWallpaperNeedsAndroid12,
               style: tokens.bodySm,
             ),
             value: state.useWallpaper && wallpaperAvailable,
             onChanged: wallpaperAvailable
                 ? (v) => state.setUseWallpaper(v)
                 : (_) => ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Wallpaper colours need Android 12 or newer.'),
+                      SnackBar(
+                        content: Text(context.l10n.displayWallpaperAndroid12Required),
                       ),
                     ),
           ),
           const SizedBox(height: 4),
-          Text('Accent', style: tokens.label),
+          Text(context.l10n.displayAccent, style: tokens.label),
           const SizedBox(height: 10),
           Wrap(
             spacing: 12,
@@ -452,7 +507,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
               return Semantics(
                 button: true,
                 selected: selected,
-                label: 'Accent colour',
+                label: context.l10n.displayAccentColorSemantics,
                 child: GestureDetector(
                   onTap: () => state.setAccentSeed(color),
                   child: AnimatedContainer(
@@ -488,39 +543,132 @@ class _DisplayScreenState extends State<DisplayScreen> {
           const SizedBox(height: 18),
           Divider(color: tokens.surfaceBorder, height: 1),
           const SizedBox(height: 12),
-          Text('Palette', style: tokens.label),
+          Text(context.l10n.displayPalette, style: tokens.label),
           const SizedBox(height: 10),
           MorphingSegmented<DynamicSchemeVariant>(
             value: state.paletteVariant,
             items: MoniTuneTheme.paletteVariants,
-            labelBuilder: MoniTuneTheme.paletteLabel,
+            labelBuilder: (variant) => switch (variant) {
+              DynamicSchemeVariant.vibrant => context.l10n.displayPaletteVibrant,
+              DynamicSchemeVariant.fidelity => context.l10n.displayPaletteFidelity,
+              DynamicSchemeVariant.expressive => context.l10n.displayPaletteExpressive,
+              DynamicSchemeVariant.tonalSpot => context.l10n.displayPaletteTonalSpot,
+              DynamicSchemeVariant.neutral => context.l10n.displayPaletteNeutral,
+              DynamicSchemeVariant.content => context.l10n.displayPaletteContent,
+              _ => MoniTuneTheme.paletteLabel(variant),
+            },
             onChanged: state.setPaletteVariant,
           ),
           const SizedBox(height: 10),
           Text(
-            'Bold keeps the accent colour vivid, Exact matches it closely, and '
-            'Expressive lets Material 3 remix the hues for a more surprising look.',
+            context.l10n.displayPaletteDescription,
             style: tokens.bodySm,
           ),
           const SizedBox(height: 18),
           Divider(color: tokens.surfaceBorder, height: 1),
           const SizedBox(height: 12),
-          Text('Contrast', style: tokens.label),
+          Text(context.l10n.displayContrast, style: tokens.label),
           const SizedBox(height: 10),
           MorphingSegmented<bool>(
             value: state.contrastBoost,
             items: const [false, true],
-            labelBuilder: (boost) => boost ? 'Boosted' : 'Standard',
+            labelBuilder: (boost) =>
+                boost ? context.l10n.displayContrastBoosted : context.l10n.displayContrastStandard,
             onChanged: state.setContrastBoost,
           ),
           const SizedBox(height: 10),
           Text(
-            'Boosted raises text and surface contrast — useful with very bright '
-            'wallpaper palettes, or on a large monitor across the room.',
+            context.l10n.displayContrastDescription,
             style: tokens.bodySm,
+          ),
+          const SizedBox(height: 14),
+          Divider(color: tokens.surfaceBorder, height: 1),
+          const SizedBox(height: 6),
+          ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Container(
+              width: 36,
+              height: 36,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: tokens.surfaceHigh,
+                borderRadius: BorderRadius.circular(MoniTuneTheme.radiusSm),
+              ),
+              child: Icon(Icons.translate_rounded, color: tokens.primary, size: 20),
+            ),
+            title: Text(
+              context.l10n.displayLanguage,
+              style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
+            ),
+            subtitle: Text(
+              _currentLanguageLabel(context, state),
+              style: tokens.bodySm,
+            ),
+            trailing: Icon(Icons.chevron_right_rounded, color: tokens.textDim),
+            onTap: () => _showLanguageSheet(context, state),
           ),
         ],
       ),
+    );
+  }
+
+  void _showLanguageSheet(BuildContext context, AppState state) {
+    final tokens = context.tokens;
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.sizeOf(sheetContext).height * 0.75,
+            ),
+            child: ListView(
+              shrinkWrap: true,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  child: Text(
+                    context.l10n.displayLanguage,
+                    style: tokens.headingSm,
+                  ),
+                ),
+                for (final lang in _supportedLanguages) ...[
+                  ListTile(
+                    title: Text(
+                      lang.code == null
+                          ? context.l10n.displayLanguageSystemDefaultSimple
+                          : lang.name,
+                      style: tokens.bodyMd.copyWith(
+                        color: tokens.textPrimary,
+                        fontWeight: (lang.code == null && state.selectedLanguageCode == null) ||
+                                (lang.code != null &&
+                                    (lang.code == state.selectedLanguageCode ||
+                                        lang.code!.replaceAll('-', '_') ==
+                                            state.selectedLanguageCode?.replaceAll('-', '_')))
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    trailing: ((lang.code == null && state.selectedLanguageCode == null) ||
+                            (lang.code != null &&
+                                (lang.code == state.selectedLanguageCode ||
+                                    lang.code!.replaceAll('-', '_') ==
+                                        state.selectedLanguageCode?.replaceAll('-', '_'))))
+                        ? Icon(Icons.check_rounded, color: tokens.primary)
+                        : null,
+                    onTap: () {
+                      context.read<AppState>().setLanguage(lang.code);
+                      Navigator.of(sheetContext).pop();
+                    },
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

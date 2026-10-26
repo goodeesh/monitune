@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:monitune/l10n/l10n.dart';
 import 'package:monitune/state/app_state.dart';
 import 'package:monitune/version.dart';
 import 'package:monitune/theme/mono_motion.dart';
@@ -22,12 +23,12 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: tokens.surface,
       appBar: AppBar(
-        title: Text('MoniTune', style: tokens.headingMd),
+        title: Text(context.l10n.appTitle, style: tokens.headingMd),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 6),
             child: IconButton(
-              tooltip: 'MoniTune ${AppVersion.current} · check for updates',
+              tooltip: context.l10n.homeCheckForUpdatesTooltip(AppVersion.current),
               icon: Badge(
                 isLabelVisible: state.hasKnownUpdate,
                 smallSize: 8,
@@ -53,24 +54,24 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     _primaryActions(context, state),
                     const SizedBox(height: 24),
-                    sectionTitle(context, 'Quick settings'),
+                    sectionTitle(context, context.l10n.homeSectionQuickSettings),
                     const SizedBox(height: 10),
                     _quickSettings(context, state),
                     const SizedBox(height: 24),
-                    sectionTitle(context, 'Configure'),
+                    sectionTitle(context, context.l10n.homeSectionConfigure),
                     const SizedBox(height: 10),
                     navTile(
                       context,
                       icon: Icons.aspect_ratio_rounded,
-                      title: 'Display',
-                      subtitle: 'Resolution, scale, appearance and launcher-safe mode',
+                      title: context.l10n.homeNavDisplayTitle,
+                      subtitle: context.l10n.homeNavDisplaySubtitle,
                       builder: (_) => const DisplayScreen(),
                     ),
                     navTile(
                       context,
                       icon: Icons.verified_user_rounded,
-                      title: 'Access & Permissions',
-                      subtitle: 'Shizuku, permanent access and special permissions',
+                      title: context.l10n.homeNavAccessTitle,
+                      subtitle: context.l10n.homeNavAccessSubtitle,
                       builder: (_) => const AccessScreen(),
                     ),
                     const SizedBox(height: 16),
@@ -91,10 +92,10 @@ class HomeScreen extends StatelessWidget {
     final tokens = context.tokens;
     final hasAccess = state.hasAnyAccess;
     final label = state.hasWriteSecureSettings
-        ? 'Permanent access active'
+        ? context.l10n.homeStatusPermanentAccessActive
         : state.hasAnyAccess
-            ? 'Privileged access ready'
-            : 'Setup required';
+            ? context.l10n.homeStatusPrivilegedAccessReady
+            : context.l10n.homeStatusSetupRequired;
     final dot = hasAccess ? tokens.success : tokens.warning;
 
     return Container(
@@ -129,7 +130,7 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(width: 14),
               Expanded(
                 child: Text(
-                  'Tune your display for any monitor',
+                  context.l10n.homeHeroTitle,
                   style: tokens.headingSm.copyWith(color: Colors.white),
                 ),
               ),
@@ -185,15 +186,17 @@ class HomeScreen extends StatelessWidget {
             width: double.infinity,
             child: FilledButton.icon(
               icon: const Icon(Icons.play_circle_outline_rounded),
-              label: const Text(
-                'Apply Test Profile',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              label: Text(
+                context.l10n.homeApplyTestProfile,
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
               onPressed: () async {
+                final messenger = ScaffoldMessenger.of(context);
+                final l10n = context.l10n;
                 final ok = await state.testDisplayProfile();
                 if (!ok && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Failed to apply. Check your privileged access.')),
+                  messenger.showSnackBar(
+                    SnackBar(content: Text(l10n.homeApplyFailed)),
                   );
                 }
               },
@@ -206,7 +209,7 @@ class HomeScreen extends StatelessWidget {
             width: double.infinity,
             child: OutlinedButton.icon(
               icon: const Icon(Icons.restart_alt_rounded),
-              label: const Text('Reset Display to Phone Default'),
+              label: Text(context.l10n.homeResetDisplayToNative),
               onPressed: () => state.resetDisplayToNative(),
             ),
           ),
@@ -224,10 +227,12 @@ class HomeScreen extends StatelessWidget {
         children: [
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text('Force Landscape (Mirroring Lock)', style: tokens.bodyMd.copyWith(color: tokens.textPrimary)),
+            title: Text(
+              context.l10n.homeForceLandscapeTitle,
+              style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
+            ),
             subtitle: Text(
-              'Forces landscape over apps that lock portrait (including the HyperOS '
-              'launcher). Applied when you tap Apply Test Profile.',
+              context.l10n.homeForceLandscapeSubtitle,
               style: tokens.bodySm,
             ),
             value: state.forceLandscape,
@@ -243,11 +248,14 @@ class HomeScreen extends StatelessWidget {
           Divider(color: tokens.surfaceBorder),
           SwitchListTile(
             contentPadding: EdgeInsets.zero,
-            title: Text('Auto-apply when a monitor connects', style: tokens.bodyMd.copyWith(color: tokens.textPrimary)),
+            title: Text(
+              context.l10n.homeAutoApplyTitle,
+              style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
+            ),
             subtitle: Text(
               state.autoApplyOnExternalDisplay
-                  ? 'Watching for external displays in the background.'
-                  : 'Apply your profile automatically when an external display connects.',
+                  ? context.l10n.homeAutoApplyWatching
+                  : context.l10n.homeAutoApplyDescription,
               style: tokens.bodySm,
             ),
             value: state.autoApplyOnExternalDisplay,
@@ -263,20 +271,26 @@ class HomeScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Permissions required'),
+        title: Text(context.l10n.homePermissionsRequiredDialogTitle),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Force Landscape can only be enabled once both special permissions are granted:',
+              context.l10n.homePermissionsRequiredDialogMessage,
               style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
             ),
             const SizedBox(height: 12),
             if (!state.hasOverlayPermission)
-              Text('• Display over other apps', style: tokens.bodyMd.copyWith(color: tokens.textPrimary)),
+              Text(
+                context.l10n.homePermissionDisplayOverApps,
+                style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
+              ),
             if (!state.hasWriteSettingsPermission)
-              Text('• Modify system settings', style: tokens.bodyMd.copyWith(color: tokens.textPrimary)),
+              Text(
+                context.l10n.homePermissionModifySettings,
+                style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
+              ),
           ],
         ),
         actions: [
@@ -286,7 +300,7 @@ class HomeScreen extends StatelessWidget {
                 Navigator.pop(ctx);
                 state.requestOverlayPermission();
               },
-              child: const Text('Grant overlay'),
+              child: Text(context.l10n.homeGrantOverlay),
             ),
           if (!state.hasWriteSettingsPermission)
             TextButton(
@@ -294,9 +308,9 @@ class HomeScreen extends StatelessWidget {
                 Navigator.pop(ctx);
                 state.requestWriteSettingsPermission();
               },
-              child: const Text('Grant settings'),
+              child: Text(context.l10n.homeGrantSettings),
             ),
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: Text(context.l10n.commonClose)),
         ],
       ),
     );
@@ -308,8 +322,8 @@ class HomeScreen extends StatelessWidget {
   Widget _versionRow(BuildContext context, AppState state) {
     final tokens = context.tokens;
     final subtitle = state.knownUpdateVersion == null
-        ? 'Check for updates · MIT licensed'
-        : 'Update ${state.knownUpdateVersion} available';
+        ? context.l10n.homeVersionCheckForUpdates
+        : context.l10n.homeVersionUpdateAvailable(state.knownUpdateVersion!);
     final radius = BorderRadius.circular(MoniTuneTheme.radiusLg);
 
     return SpringPress(
@@ -346,7 +360,7 @@ class HomeScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'MoniTune ${AppVersion.current}',
+                        '${context.l10n.appTitle} ${AppVersion.current}',
                         style: tokens.bodyMd.copyWith(
                           color: tokens.textPrimary,
                           fontWeight: FontWeight.w600,
@@ -372,7 +386,8 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _testOverlay(BuildContext context, AppState state) {    final tokens = context.tokens;
+  Widget _testOverlay(BuildContext context, AppState state) {
+    final tokens = context.tokens;
     return SafeArea(
       child: Container(
         margin: const EdgeInsets.all(12),
@@ -398,7 +413,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    'Test profile active — reverting in ${state.testSecondsRemaining}s',
+                    context.l10n.homeTestRevertingBanner(state.testSecondsRemaining),
                     style: tokens.bodyMd.copyWith(
                       color: tokens.textPrimary,
                       fontWeight: FontWeight.w600,
@@ -417,7 +432,7 @@ class HomeScreen extends StatelessWidget {
                       foregroundColor: tokens.surface,
                     ),
                     onPressed: () => state.confirmDisplayProfile(),
-                    child: const Text('Keep Settings'),
+                    child: Text(context.l10n.homeKeepSettings),
                   ),
                 ),
                 const SizedBox(width: 10),
@@ -428,7 +443,7 @@ class HomeScreen extends StatelessWidget {
                       side: BorderSide(color: tokens.danger),
                     ),
                     onPressed: () => state.resetDisplayToNative(),
-                    child: const Text('Revert Now'),
+                    child: Text(context.l10n.homeRevertNow),
                   ),
                 ),
               ],
