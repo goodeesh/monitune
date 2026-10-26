@@ -90,6 +90,22 @@ void main() {
       resolvedZhHant,
       const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
     );
+
+    // Multi-preference priority ordering
+    final resolvedEnPriority = resolveAppLocale(
+      [const Locale('en', 'US'), const Locale('zh', 'TW')],
+      AppLocalizations.supportedLocales,
+    );
+    expect(resolvedEnPriority, const Locale('en'));
+
+    final resolvedZhPriority = resolveAppLocale(
+      [const Locale('zh', 'TW'), const Locale('en', 'US')],
+      AppLocalizations.supportedLocales,
+    );
+    expect(
+      resolvedZhPriority,
+      const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+    );
   });
 
   Widget wrap(Widget child, {Color seed = MoniTuneTheme.fallbackSeed, AppState? state}) {

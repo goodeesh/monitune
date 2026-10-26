@@ -21,22 +21,22 @@ void main() {
 }
 
 Locale resolveAppLocale(List<Locale>? locales, Iterable<Locale> supportedLocales) {
-  if (locales != null) {
-    for (final locale in locales) {
-      if (locale.languageCode == 'zh') {
-        if (locale.scriptCode == 'Hant' ||
-            locale.countryCode == 'TW' ||
-            locale.countryCode == 'HK') {
-          return const Locale.fromSubtags(
-            languageCode: 'zh',
-            scriptCode: 'Hant',
-          );
-        }
-        return const Locale('zh');
+  if (locales == null || locales.isEmpty) {
+    return basicLocaleListResolution(locales, supportedLocales);
+  }
+
+  final normalizedLocales = locales.map((locale) {
+    if (locale.languageCode == 'zh') {
+      if (locale.scriptCode == 'Hant' ||
+          locale.countryCode == 'TW' ||
+          locale.countryCode == 'HK') {
+        return const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant');
       }
     }
-  }
-  return basicLocaleListResolution(locales, supportedLocales);
+    return locale;
+  }).toList();
+
+  return basicLocaleListResolution(normalizedLocales, supportedLocales);
 }
 
 class MonituneApp extends StatefulWidget {
