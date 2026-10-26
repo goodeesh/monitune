@@ -20,6 +20,25 @@ void main() {
   );
 }
 
+Locale resolveAppLocale(List<Locale>? locales, Iterable<Locale> supportedLocales) {
+  if (locales != null) {
+    for (final locale in locales) {
+      if (locale.languageCode == 'zh') {
+        if (locale.scriptCode == 'Hant' ||
+            locale.countryCode == 'TW' ||
+            locale.countryCode == 'HK') {
+          return const Locale.fromSubtags(
+            languageCode: 'zh',
+            scriptCode: 'Hant',
+          );
+        }
+        return const Locale('zh');
+      }
+    }
+  }
+  return basicLocaleListResolution(locales, supportedLocales);
+}
+
 class MonituneApp extends StatefulWidget {
   const MonituneApp({super.key});
 
@@ -83,30 +102,7 @@ class _MonituneAppState extends State<MonituneApp> with WidgetsBindingObserver {
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: appearance.locale,
-      localeListResolutionCallback: (locales, supportedLocales) {
-        if (locales == null || locales.isEmpty) return supportedLocales.first;
-        for (final locale in locales) {
-          if (locale.languageCode == 'zh') {
-            if (locale.scriptCode == 'Hant' ||
-                locale.countryCode == 'TW' ||
-                locale.countryCode == 'HK') {
-              return const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hant',
-              );
-            }
-            return const Locale('zh');
-          }
-          for (final supported in supportedLocales) {
-            if (supported.languageCode == locale.languageCode &&
-                (supported.countryCode == null ||
-                    supported.countryCode == locale.countryCode)) {
-              return supported;
-            }
-          }
-        }
-        return supportedLocales.first;
-      },
+      localeListResolutionCallback: resolveAppLocale,
       home: Consumer<AppState>(
         builder: (context, state, _) {
           return state.onboardingComplete ? const HomeScreen() : const OnboardingFlow();
