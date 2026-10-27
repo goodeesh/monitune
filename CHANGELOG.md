@@ -10,15 +10,14 @@ intended to sit and be used.
 - **Crash on Disabling Auto-Apply**: Fixed crash when toggling off the Auto-apply switch.
 - **Auto-Apply Re-Arm After Update**: Auto-apply now stays active automatically after updating the app.
 - **Persistent "Update Available" Notice**: Fixed the update notice persisting after updating to the new release.
-- **HDMI Mirroring Display Brightness**: Kept phone screen blackout strictly to hardware panel brightness reduction, ensuring TV / monitor HDMI output remains 100% full brightness and color accuracy.
+- **External Display Brightness**: Ensured phone dimming only adjusts the phone screen brightness so the external monitor/TV stays at full brightness.
 
 ## 1.2.0
 
 ### Added
-- **Phone Screen Blackout (AMOLED Friendly)**: Automated sub-option under **Auto-apply on connect** on the Home screen. When an external display is connected, the phone screen brightness drops to zero and switches to manual mode, blacking out AMOLED panels to save battery, reduce heat, and prevent burn-in without altering the digital HDMI/DisplayPort video output.
-- **Zero Runtime Dependencies**: Works entirely via Permanent Access (`WRITE_SECURE_SETTINGS` / `WRITE_SETTINGS`), with zero Shizuku or root required at runtime.
-- **Multi-Layer Anti-Lockout Failsafes**: Screen brightness safely and automatically restores on monitor disconnect, service shutdown, in-app toggle, or device reboot (`BootReceiver`), with recovery against unexpected process termination.
-- **Full Localization**: The new blackout sub-option title and description are translated across all 18 supported languages with RTL alignment support for Arabic.
+- **Dim phone screen on connect**: Sub-option under **Auto-apply on connect** on the Home screen. When an external display is connected, phone screen brightness drops to minimum to reduce glare, save battery, and minimize heat while mirroring, without affecting external display brightness.
+- **Brightness restoration failsafes**: Screen brightness automatically restores to its previous level when disconnecting, toggling the setting off, or rebooting.
+- **Full localization**: The dimming sub-option is translated across all 18 supported languages.
 
 ## 1.1.0
 
