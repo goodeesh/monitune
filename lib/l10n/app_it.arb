@@ -36,7 +36,7 @@
   "homeAutoApplyWatching": "Monitoraggio display esterni in background.",
   "homeAutoApplyDescription": "Applica automaticamente il tuo profilo quando viene collegato un monitor esterno.",
   "homeAutoApplyBlackoutTitle": "Oscura schermo del telefono",
-  "homeAutoApplyBlackoutSubtitle": "Azzera la luminosità dello schermo alla connessione (consigliato per AMOLED)",
+  "homeAutoApplyBlackoutSubtitle": "Riduce la luminosità al minimo alla connessione",
   "homePermissionsRequiredDialogTitle": "Autorizzazioni richieste",
   "homePermissionsRequiredDialogMessage": "Forza orizzontale può essere attivato solo dopo aver concesso entrambi i permessi speciali:",
   "homePermissionDisplayOverApps": "• Mostra sopra altre app",

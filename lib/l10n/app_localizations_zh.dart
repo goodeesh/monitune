@@ -118,10 +118,10 @@ class AppLocalizationsZh extends AppLocalizations {
   String get homeAutoApplyDescription => '外接显示器连接时自动应用配置。';
 
   @override
-  String get homeAutoApplyBlackoutTitle => '熄灭手机屏幕';
+  String get homeAutoApplyBlackoutTitle => '调暗手机屏幕';
 
   @override
-  String get homeAutoApplyBlackoutSubtitle => '连接时将手机屏幕亮度调至最低（推荐 AMOLED 屏幕）';
+  String get homeAutoApplyBlackoutSubtitle => '连接时将手机屏幕亮度调至最低';
 
   @override
   String get homePermissionsRequiredDialogTitle => '需要授予权限';
@@ -945,10 +945,10 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String get homeAutoApplyDescription => '外接螢幕連線時自動套用設定檔。';
 
   @override
-  String get homeAutoApplyBlackoutTitle => '熄滅手機螢幕';
+  String get homeAutoApplyBlackoutTitle => '調暗手機螢幕';
 
   @override
-  String get homeAutoApplyBlackoutSubtitle => '連線時將手機螢幕亮度調至最低（建議 AMOLED 螢幕）';
+  String get homeAutoApplyBlackoutSubtitle => '連線時將手機螢幕亮度調至最低';
 
   @override
   String get homePermissionsRequiredDialogTitle => '需要授予權限';

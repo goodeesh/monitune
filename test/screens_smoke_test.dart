@@ -247,25 +247,32 @@ void main() {
     await tester.pumpWidget(wrap(const HomeScreen(), state: state));
     await settle(tester);
 
-    // With auto-apply OFF, blackout switch should not be visible
-    expect(find.text('Blackout phone screen'), findsNothing);
+    // With auto-apply OFF, dim switch should not be visible
+    expect(find.text('Dim phone screen'), findsNothing);
 
     // Turn auto-apply ON
     await state.setAutoApplyOnExternalDisplay(true);
     await settle(tester);
 
-    expect(find.text('Blackout phone screen'), findsOneWidget);
+    await tester.scrollUntilVisible(
+      find.text('Dim phone screen'),
+      100,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await settle(tester);
+
+    expect(find.text('Dim phone screen'), findsOneWidget);
     expect(state.blackoutOnConnect, isFalse);
 
     // Tapping the sub-switch toggles blackoutOnConnect
-    await tester.tap(find.text('Blackout phone screen'));
+    await tester.tap(find.text('Dim phone screen'));
     await settle(tester);
     expect(state.blackoutOnConnect, isTrue);
 
     // Turning auto-apply back OFF hides the sub-switch
     await state.setAutoApplyOnExternalDisplay(false);
     await settle(tester);
-    expect(find.text('Blackout phone screen'), findsNothing);
+    expect(find.text('Dim phone screen'), findsNothing);
   });
 }
 

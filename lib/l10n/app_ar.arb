@@ -36,7 +36,7 @@
   "homeAutoApplyWatching": "مراقبة الشاشات الخارجية في الخلفية.",
   "homeAutoApplyDescription": "تطبيق الملف التعريفي تلقائياً عند توصيل شاشة خارجية.",
   "homeAutoApplyBlackoutTitle": "إعتام شاشة الهاتف",
-  "homeAutoApplyBlackoutSubtitle": "يخفض سطوع الشاشة إلى الصفر عند الاتصال (موصى به لشاشات AMOLED)",
+  "homeAutoApplyBlackoutSubtitle": "يخفض سطوع الشاشة إلى الحد الأدنى عند الاتصال",
   "homePermissionsRequiredDialogTitle": "الأذونات مطلوبة",
   "homePermissionsRequiredDialogMessage": "لا يمكن تفعيل فرض الوضع الأفقي إلا بعد منح كلا الإذنين الخاصين:",
   "homePermissionDisplayOverApps": "• الظهور فوق التطبيقات الأخرى",

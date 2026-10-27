@@ -130,7 +130,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'Réduit la luminosité à zéro lors de la connexion (recommandé pour AMOLED)';
+      'Réduit la luminosité au minimum lors de la connexion';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'Autorisations requises';

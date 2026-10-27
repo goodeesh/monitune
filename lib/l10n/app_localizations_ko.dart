@@ -118,11 +118,10 @@ class AppLocalizationsKo extends AppLocalizations {
   String get homeAutoApplyDescription => '외부 디스플레이가 연결되면 설정한 프로필을 자동으로 적용합니다.';
 
   @override
-  String get homeAutoApplyBlackoutTitle => '휴대폰 화면 끄기';
+  String get homeAutoApplyBlackoutTitle => '휴대폰 화면 어둡게 하기';
 
   @override
-  String get homeAutoApplyBlackoutSubtitle =>
-      '연결 시 화면 밝기를 0으로 낮춥니다 (AMOLED 권장)';
+  String get homeAutoApplyBlackoutSubtitle => '연결 시 화면 밝기를 최소로 낮춥니다';
 
   @override
   String get homePermissionsRequiredDialogTitle => '권한 필요';

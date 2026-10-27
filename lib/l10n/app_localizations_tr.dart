@@ -125,7 +125,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'Bağlandığında ekran parlaklığını sıfıra indirir (AMOLED önerilir)';
+      'Bağlandığında ekran parlaklığını en aza indirir';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'İzinler gerekli';

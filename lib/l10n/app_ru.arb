@@ -36,7 +36,7 @@
   "homeAutoApplyWatching": "Поиск внешних экранов в фоновом режиме.",
   "homeAutoApplyDescription": "Автоматически применять профиль при подключении внешнего экрана.",
   "homeAutoApplyBlackoutTitle": "Затемнять экран телефона",
-  "homeAutoApplyBlackoutSubtitle": "Снижает яркость экрана до нуля при подключении (рекомендуется для AMOLED)",
+  "homeAutoApplyBlackoutSubtitle": "Снижает яркость экрана до минимума при подключении",
   "homePermissionsRequiredDialogTitle": "Требуются разрешения",
   "homePermissionsRequiredDialogMessage": "Принудительный альбомный режим можно включить только после предоставления обоих специальных разрешений:",
   "homePermissionDisplayOverApps": "• Поверх других приложений",

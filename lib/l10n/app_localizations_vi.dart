@@ -125,11 +125,11 @@ class AppLocalizationsVi extends AppLocalizations {
       'Tự động áp dụng cấu hình khi có màn hình ngoài kết nối.';
 
   @override
-  String get homeAutoApplyBlackoutTitle => 'Tắt màn hình điện thoại';
+  String get homeAutoApplyBlackoutTitle => 'Giảm độ sáng màn hình';
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'Giảm độ sáng màn hình về 0 khi kết nối (khuyên dùng cho AMOLED)';
+      'Giảm độ sáng màn hình xuống mức tối thiểu khi kết nối';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'Yêu cầu cấp quyền';

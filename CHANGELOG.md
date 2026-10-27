@@ -12,6 +12,9 @@ intended to sit and be used.
 - **Persistent "Update Available" Notice**: Fixed the update notice persisting after updating to the new release.
 - **External Display Brightness**: Ensured phone dimming only adjusts the phone screen brightness so the external monitor/TV stays at full brightness.
 
+### Changed
+- **Dim Feature Description**: Updated feature title to "Dim phone screen" across all 18 languages to accurately reflect minimum brightness dimming rather than AMOLED-exclusive blackout.
+
 ## 1.2.0
 
 ### Added

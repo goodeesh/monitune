@@ -126,11 +126,11 @@ class AppLocalizationsPl extends AppLocalizations {
       'Automatycznie stosuj profil po podłączeniu zewnętrznego ekranu.';
 
   @override
-  String get homeAutoApplyBlackoutTitle => 'Zaciemnij ekran telefonu';
+  String get homeAutoApplyBlackoutTitle => 'Ściemnij ekran telefonu';
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'Zmniejsza jasność ekranu do zera po podłączeniu (zalecane dla AMOLED)';
+      'Zmniejsza jasność ekranu do minimum po podłączeniu';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'Wymagane uprawnienia';

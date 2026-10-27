@@ -118,10 +118,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get homeAutoApplyDescription => '外部ディスプレイ接続時に自動でプロファイルを適用します。';
 
   @override
-  String get homeAutoApplyBlackoutTitle => 'スマホの画面を消灯';
+  String get homeAutoApplyBlackoutTitle => '画面の明るさを下げる';
 
   @override
-  String get homeAutoApplyBlackoutSubtitle => '接続時に画面の明るさをゼロにします（AMOLED推奨）';
+  String get homeAutoApplyBlackoutSubtitle => '接続時に画面の明るさを最小にします';
 
   @override
   String get homePermissionsRequiredDialogTitle => '権限が必要です';

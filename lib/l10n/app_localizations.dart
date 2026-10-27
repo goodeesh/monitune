@@ -340,16 +340,16 @@ abstract class AppLocalizations {
   /// **'Apply your profile automatically when an external display connects.'**
   String get homeAutoApplyDescription;
 
-  /// Sub-option title under Auto-apply to dim phone screen to zero when mirroring
+  /// Sub-option title under Auto-apply to dim phone screen to minimum when mirroring
   ///
   /// In en, this message translates to:
-  /// **'Blackout phone screen'**
+  /// **'Dim phone screen'**
   String get homeAutoApplyBlackoutTitle;
 
-  /// Sub-option description under Auto-apply explaining brightness zeroing for AMOLED screens
+  /// Sub-option description under Auto-apply explaining brightness reduction to minimum
   ///
   /// In en, this message translates to:
-  /// **'Dims phone display to zero on connect (AMOLED recommended)'**
+  /// **'Dims phone display to minimum on connect'**
   String get homeAutoApplyBlackoutSubtitle;
 
   /// Title for the dialog warning that Force Landscape needs special permissions

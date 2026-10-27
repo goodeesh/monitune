@@ -129,7 +129,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'Снижает яркость экрана до нуля при подключении (рекомендуется для AMOLED)';
+      'Снижает яркость экрана до минимума при подключении';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'Требуются разрешения';

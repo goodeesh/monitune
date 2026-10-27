@@ -130,7 +130,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'Dunkelt den Bildschirm beim Verbinden komplett ab (AMOLED empfohlen)';
+      'Dunkelt den Bildschirm beim Verbinden auf das Minimum ab';
 
   @override
   String get homePermissionsRequiredDialogTitle =>

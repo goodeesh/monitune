@@ -36,7 +36,7 @@
   "homeAutoApplyWatching": "Sucht im Hintergrund nach externen Displays.",
   "homeAutoApplyDescription": "Wendet dein Profil automatisch an, sobald ein externes Display verbunden ist.",
   "homeAutoApplyBlackoutTitle": "Telefonbildschirm abdunkeln",
-  "homeAutoApplyBlackoutSubtitle": "Dunkelt den Bildschirm beim Verbinden komplett ab (AMOLED empfohlen)",
+  "homeAutoApplyBlackoutSubtitle": "Dunkelt den Bildschirm beim Verbinden auf das Minimum ab",
   "homePermissionsRequiredDialogTitle": "Berechtigungen erforderlich",
   "homePermissionsRequiredDialogMessage": "Querformat erzwingen kann erst aktiviert werden, wenn beide Sonderberechtigungen gewährt wurden:",
   "homePermissionDisplayOverApps": "• Über anderen Apps anzeigen",

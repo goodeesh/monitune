@@ -123,11 +123,11 @@ class AppLocalizationsId extends AppLocalizations {
       'Terapkan profil Anda secara otomatis saat layar eksternal tersambung.';
 
   @override
-  String get homeAutoApplyBlackoutTitle => 'Matikan layar ponsel';
+  String get homeAutoApplyBlackoutTitle => 'Redupkan layar ponsel';
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'Meredupkan layar ponsel hingga nol saat terhubung (disarankan untuk AMOLED)';
+      'Meredupkan layar ponsel ke batas minimum saat terhubung';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'Izin diperlukan';

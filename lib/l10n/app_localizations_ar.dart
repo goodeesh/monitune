@@ -125,7 +125,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
-      'يخفض سطوع الشاشة إلى الصفر عند الاتصال (موصى به لشاشات AMOLED)';
+      'يخفض سطوع الشاشة إلى الحد الأدنى عند الاتصال';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'الأذونات مطلوبة';

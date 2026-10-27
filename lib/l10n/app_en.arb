@@ -4,7 +4,6 @@
   "@appTitle": {
     "description": "The title of the application"
   },
-
   "commonCancel": "Cancel",
   "@commonCancel": {
     "description": "Standard cancel button text"
@@ -65,7 +64,6 @@
   "@commonDisabled": {
     "description": "Generic disabled state label"
   },
-
   "homeCheckForUpdatesTooltip": "MoniTune {version} · check for updates",
   "@homeCheckForUpdatesTooltip": {
     "description": "Tooltip shown on the update action button in the Home app bar",
@@ -148,13 +146,13 @@
   "@homeAutoApplyDescription": {
     "description": "Subtitle description when the background display watcher is disabled"
   },
-  "homeAutoApplyBlackoutTitle": "Blackout phone screen",
+  "homeAutoApplyBlackoutTitle": "Dim phone screen",
   "@homeAutoApplyBlackoutTitle": {
-    "description": "Sub-option title under Auto-apply to dim phone screen to zero when mirroring"
+    "description": "Sub-option title under Auto-apply to dim phone screen to minimum when mirroring"
   },
-  "homeAutoApplyBlackoutSubtitle": "Dims phone display to zero on connect (AMOLED recommended)",
+  "homeAutoApplyBlackoutSubtitle": "Dims phone display to minimum on connect",
   "@homeAutoApplyBlackoutSubtitle": {
-    "description": "Sub-option description under Auto-apply explaining brightness zeroing for AMOLED screens"
+    "description": "Sub-option description under Auto-apply explaining brightness reduction to minimum"
   },
   "homePermissionsRequiredDialogTitle": "Permissions required",
   "@homePermissionsRequiredDialogTitle": {
@@ -288,7 +286,6 @@
   "@homeOrientationLockFailedSummary": {
     "description": "Summary status message when landscape lock could not be engaged"
   },
-
   "displayTitle": "Display",
   "@displayTitle": {
     "description": "Title of the display settings screen"
@@ -679,7 +676,6 @@
   "@displayLanguageSystemDefaultSimple": {
     "description": "Option in language picker to automatically follow system language"
   },
-
   "accessTitle": "Access & Permissions",
   "@accessTitle": {
     "description": "Screen title for Access & Permissions"
@@ -828,7 +824,6 @@
   "@accessAdbGrantCommand": {
     "description": "The exact shell command used to grant WRITE_SECURE_SETTINGS via ADB"
   },
-
   "onboardingSkip": "Skip",
   "@onboardingSkip": {
     "description": "Action button in top bar to skip onboarding wizard"
@@ -1013,7 +1008,6 @@
   "@onboardingReadyButton": {
     "description": "Action button navigating directly to AccessScreen"
   },
-
   "infoVersion": "Version {version}",
   "@infoVersion": {
     "description": "App version label without build number",
@@ -1146,7 +1140,6 @@
   "@infoGenericError": {
     "description": "Generic catch-all error message when update check fails"
   },
-
   "safetyEmergencyRevertHint": "Turn screen off (Power button) to instantly cancel & revert",
   "@safetyEmergencyRevertHint": {
     "description": "Emergency recovery instruction explaining how turning off the screen triggers instant display reset"

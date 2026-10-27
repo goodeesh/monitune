@@ -36,7 +36,7 @@
   "homeAutoApplyWatching": "Arka planda harici ekranlar izleniyor.",
   "homeAutoApplyDescription": "Harici bir ekran bağlandığında profilinizi otomatik olarak uygulayın.",
   "homeAutoApplyBlackoutTitle": "Telefon ekranını karart",
-  "homeAutoApplyBlackoutSubtitle": "Bağlandığında ekran parlaklığını sıfıra indirir (AMOLED önerilir)",
+  "homeAutoApplyBlackoutSubtitle": "Bağlandığında ekran parlaklığını en aza indirir",
   "homePermissionsRequiredDialogTitle": "İzinler gerekli",
   "homePermissionsRequiredDialogMessage": "Yatay Modu Zorla yalnızca her iki özel izin verildikten sonra etkinleştirilebilir:",
   "homePermissionDisplayOverApps": "• Diğer uygulamaların üzerinde görüntüleme",
