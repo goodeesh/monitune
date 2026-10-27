@@ -261,6 +261,24 @@ class HomeScreen extends StatelessWidget {
             value: state.autoApplyOnExternalDisplay,
             onChanged: (v) => state.setAutoApplyOnExternalDisplay(v),
           ),
+          if (state.autoApplyOnExternalDisplay) ...[
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0),
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: Text(
+                  context.l10n.homeAutoApplyBlackoutTitle,
+                  style: tokens.bodyMd.copyWith(color: tokens.textPrimary),
+                ),
+                subtitle: Text(
+                  context.l10n.homeAutoApplyBlackoutSubtitle,
+                  style: tokens.bodySm,
+                ),
+                value: state.blackoutOnConnect,
+                onChanged: (v) => state.setBlackoutOnConnect(v),
+              ),
+            ),
+          ],
         ],
       ),
     );
