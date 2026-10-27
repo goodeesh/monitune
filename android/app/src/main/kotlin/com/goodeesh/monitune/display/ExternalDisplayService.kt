@@ -47,6 +47,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         private const val KEY_FORCE_LANDSCAPE = "forceLandscape"
         private const val KEY_APPLY_DENSITY = "applyDensity"
         private const val KEY_AUTO_RESET = "autoReset"
+        private const val KEY_BLACKOUT = "blackoutPhone"
 
         private const val CHANNEL_ID = "monitune_watch"
         private const val NOTIFICATION_ID = 4101
@@ -73,6 +74,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             forceLandscape: Boolean,
             applyDensity: Boolean,
             autoReset: Boolean,
+            blackout: Boolean = false,
             enabled: Boolean,
         ) {
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -82,6 +84,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
                 .putBoolean(KEY_FORCE_LANDSCAPE, forceLandscape)
                 .putBoolean(KEY_APPLY_DENSITY, applyDensity)
                 .putBoolean(KEY_AUTO_RESET, autoReset)
+                .putBoolean(KEY_BLACKOUT, blackout)
                 .putBoolean(KEY_ENABLED, enabled)
                 .apply()
         }

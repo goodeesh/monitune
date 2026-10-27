@@ -152,7 +152,7 @@ class MonitunePlatform {
     required bool forceLandscape,
     required bool applyDensity,
     required bool autoReset,
-    bool blackoutPhone = false,
+    required bool blackoutPhone,
   }) async {
     final result = await _channel.invokeMethod<bool>('startExternalDisplayWatch', {
       'width': width,
@@ -173,7 +173,7 @@ class MonitunePlatform {
     required bool forceLandscape,
     required bool applyDensity,
     required bool autoReset,
-    bool blackoutPhone = false,
+    required bool blackoutPhone,
   }) async {
     final result = await _channel.invokeMethod<bool>('updateExternalDisplayWatch', {
       'width': width,

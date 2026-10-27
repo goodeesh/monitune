@@ -208,6 +208,7 @@ class MainActivity : FlutterActivity() {
                         forceLandscape = call.argument<Boolean>("forceLandscape") ?: true,
                         applyDensity = call.argument<Boolean>("applyDensity") ?: true,
                         autoReset = call.argument<Boolean>("autoReset") ?: true,
+                        blackout = call.argument<Boolean>("blackoutPhone") ?: false,
                         enabled = true,
                     )
                     ensureNotificationPermission()
@@ -224,6 +225,7 @@ class MainActivity : FlutterActivity() {
                         forceLandscape = call.argument<Boolean>("forceLandscape") ?: true,
                         applyDensity = call.argument<Boolean>("applyDensity") ?: true,
                         autoReset = call.argument<Boolean>("autoReset") ?: true,
+                        blackout = call.argument<Boolean>("blackoutPhone") ?: false,
                         enabled = true,
                     )
                     startDisplayWatchService(ExternalDisplayService.ACTION_UPDATE)
