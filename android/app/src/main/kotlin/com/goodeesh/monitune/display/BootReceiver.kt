@@ -11,7 +11,7 @@ class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != Intent.ACTION_BOOT_COMPLETED) return
 
-        if (ExternalDisplayService.connectedExternalDisplay(context) == null) {
+        if (ExternalDisplayService.connectedExternalDisplay(context) == null || !ExternalDisplayService.isEnabled(context)) {
             ExternalDisplayService.restoreBlackout(context)
         }
 

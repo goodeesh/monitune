@@ -74,13 +74,12 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             val savedBrightness = prefs.getInt(KEY_SAVED_BRIGHTNESS, -1)
             val savedMode = prefs.getInt(KEY_SAVED_BRIGHTNESS_MODE, -1)
             try {
-                if (savedBrightness >= 0) {
-                    Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, savedBrightness)
-                }
+                val targetBrightness = if (savedBrightness >= 0) savedBrightness else 128
+                Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, targetBrightness)
                 if (savedMode >= 0) {
                     Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, savedMode)
                 }
-                Log.i(TAG, "Restored screen brightness=$savedBrightness mode=$savedMode")
+                Log.i(TAG, "Restored screen brightness=$targetBrightness mode=$savedMode")
             } catch (e: Throwable) {
                 Log.e(TAG, "Failed to restore screen brightness", e)
             } finally {
@@ -206,6 +205,11 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             Log.i(TAG, "Applied screen blackout: brightness 0 (saved: $currentBrightness, mode: $currentMode)")
         } catch (e: Throwable) {
             Log.e(TAG, "Failed to apply screen blackout", e)
+            prefs.edit()
+                .remove(KEY_SAVED_BRIGHTNESS)
+                .remove(KEY_SAVED_BRIGHTNESS_MODE)
+                .putBoolean(KEY_BLACKOUT_ACTIVE, false)
+                .apply()
         }
     }
 
