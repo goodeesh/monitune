@@ -4,6 +4,14 @@ All notable changes to MoniTune are recorded here. Versions before 1.0.0 were
 development builds published to GitHub Releases; 1.0.0 is the first release
 intended to sit and be used.
 
+## 1.2.0
+
+### Added
+- **Phone Screen Blackout (AMOLED Friendly)**: Automated sub-option under **Auto-apply on connect** on the Home screen. When an external display is connected, the phone screen brightness drops to zero and switches to manual mode, blacking out AMOLED panels to save battery, reduce heat, and prevent burn-in without altering the digital HDMI/DisplayPort video output.
+- **Zero Runtime Dependencies**: Works entirely via Permanent Access (`WRITE_SECURE_SETTINGS` / `WRITE_SETTINGS`), with zero Shizuku or root required at runtime.
+- **Multi-Layer Anti-Lockout Failsafes**: Screen brightness safely and automatically restores on monitor disconnect, service shutdown, in-app toggle, or device reboot (`BootReceiver`), with recovery against unexpected process termination.
+- **Full Localization**: The new blackout sub-option title and description are translated across all 18 supported languages with RTL alignment support for Arabic.
+
 ## 1.1.0
 
 ### Added
