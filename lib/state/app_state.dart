@@ -6,6 +6,7 @@ import 'package:monitune/services/platform_bridge.dart';
 import 'package:monitune/services/update_checker.dart';
 import 'package:monitune/services/wallpaper_palette.dart';
 import 'package:monitune/theme/monitune_theme.dart';
+import 'package:monitune/version.dart';
 
 /// Central state for MoniTune. Display configuration and appearance only.
 class AppState extends ChangeNotifier {
@@ -46,8 +47,13 @@ class AppState extends ChangeNotifier {
       _knownCheckedVersion = _prefs?.getString('update_checked_version');
       _knownLatestVersion = _prefs?.getString('update_known_version');
       _knownLatestUrl = _prefs?.getString('update_known_url');
-      if (_knownLatestVersion != null && _knownLatestVersion!.isEmpty) {
+      if (_knownLatestVersion != null &&
+          (_knownLatestVersion!.isEmpty ||
+              compareVersions(_knownLatestVersion!, AppVersion.current) <= 0)) {
         _knownLatestVersion = null;
+        _knownLatestUrl = null;
+        _prefs?.remove('update_known_version');
+        _prefs?.remove('update_known_url');
       }
       if (_knownLatestUrl != null && _knownLatestUrl!.isEmpty) {
         _knownLatestUrl = null;
@@ -241,9 +247,8 @@ class AppState extends ChangeNotifier {
   /// Newer version reported by the last successful check, or `null`.
   String? get knownUpdateVersion {
     final latest = _knownLatestVersion;
-    final installed = _knownCheckedVersion;
-    if (latest == null || installed == null) return null;
-    return compareVersions(latest, installed) > 0 ? latest : null;
+    if (latest == null) return null;
+    return compareVersions(latest, AppVersion.current) > 0 ? latest : null;
   }
 
   bool get hasKnownUpdate => knownUpdateVersion != null;

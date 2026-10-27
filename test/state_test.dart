@@ -2,6 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:monitune/services/platform_bridge.dart';
 import 'package:monitune/state/app_state.dart';
+import 'package:monitune/version.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -116,5 +117,20 @@ void main() {
 
     expect(state.autoApplyOnExternalDisplay, isTrue);
     expect(watchStarted, isTrue);
+  });
+
+  test('persisted update notifications are cleared if current app version is >= known update version', () async {
+    SharedPreferences.setMockInitialValues({
+      'update_checked_version': '1.1.0',
+      'update_known_version': AppVersion.current,
+      'update_known_url': 'https://github.com/goodeesh/monitune/releases/tag/v1.2.1',
+    });
+    final state = AppState();
+    await state.init();
+
+    expect(state.hasKnownUpdate, isFalse);
+    expect(state.knownUpdateVersion, isNull);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.containsKey('update_known_version'), isFalse);
   });
 }

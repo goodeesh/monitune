@@ -7,13 +7,10 @@ intended to sit and be used.
 ## 1.2.1
 
 ### Fixed
-- **Crash on Disabling Auto-Apply**: Fixed fatal `ForegroundServiceDidNotStartInTimeException` when toggling off auto-apply by stopping `ExternalDisplayService` directly via `stopService()` instead of starting it with `ACTION_STOP`.
-- **Auto-Apply Re-Arm After App Update**: Registered `ACTION_MY_PACKAGE_REPLACED` in `BootReceiver` and added an initialization check in `AppState.initialize()` so the background monitor watcher automatically revives after APK updates.
-
-### Added
-- **True Blackout Overlay (AMOLED Friendly)**: When the blackout sub-option is active, MoniTune now draws an opaque pure black overlay on the built-in display (`Display.DEFAULT_DISPLAY`), completely turning off AMOLED pixels and intercepting accidental touches.
-- **Double-Tap Wake**: Double-tapping anywhere on the black screen temporarily lifts the blackout overlay for 10 seconds to allow interacting with the phone without unplugging the display cable.
-- **Native Extra Dim**: Simultaneously activates Android 12+'s Extra Dim (`reduce_bright_colors_activated`) via `WRITE_SECURE_SETTINGS` alongside brightness zeroing for maximum energy savings and glare reduction.
+- **Crash on Disabling Auto-Apply**: Fixed crash when toggling off the Auto-apply switch.
+- **Auto-Apply Re-Arm After Update**: Auto-apply now stays active automatically after updating the app.
+- **Persistent "Update Available" Notice**: Fixed the update notice persisting after updating to the new release.
+- **HDMI Mirroring Display Brightness**: Kept phone screen blackout strictly to hardware panel brightness reduction, ensuring TV / monitor HDMI output remains 100% full brightness and color accuracy.
 
 ## 1.2.0
 
