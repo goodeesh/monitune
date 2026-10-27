@@ -148,6 +148,14 @@
   "@homeAutoApplyDescription": {
     "description": "Subtitle description when the background display watcher is disabled"
   },
+  "homeAutoApplyBlackoutTitle": "Blackout phone screen",
+  "@homeAutoApplyBlackoutTitle": {
+    "description": "Sub-option title under Auto-apply to dim phone screen to zero when mirroring"
+  },
+  "homeAutoApplyBlackoutSubtitle": "Dims phone display to zero on connect (AMOLED recommended)",
+  "@homeAutoApplyBlackoutSubtitle": {
+    "description": "Sub-option description under Auto-apply explaining brightness zeroing for AMOLED screens"
+  },
   "homePermissionsRequiredDialogTitle": "Permissions required",
   "@homePermissionsRequiredDialogTitle": {
     "description": "Title for the dialog warning that Force Landscape needs special permissions"

@@ -35,6 +35,8 @@
   "homeAutoApplyTitle": "Appliquer automatiquement à la connexion d'un écran",
   "homeAutoApplyWatching": "Surveillance des écrans externes en arrière-plan.",
   "homeAutoApplyDescription": "Applique automatiquement votre profil lorsqu'un écran externe est connecté.",
+  "homeAutoApplyBlackoutTitle": "Écran du téléphone noir",
+  "homeAutoApplyBlackoutSubtitle": "Réduit la luminosité à zéro lors de la connexion (recommandé pour AMOLED)",
   "homePermissionsRequiredDialogTitle": "Autorisations requises",
   "homePermissionsRequiredDialogMessage": "Le mode Forcer le mode paysage ne peut être activé qu'après avoir accordé ces deux autorisations spéciales :",
   "homePermissionDisplayOverApps": "• Afficher sur d'autres applications",

@@ -35,6 +35,8 @@
   "homeAutoApplyTitle": "Stosuj automatycznie po podłączeniu monitora",
   "homeAutoApplyWatching": "Wyszukiwanie zewnętrznych ekranów w tle.",
   "homeAutoApplyDescription": "Automatycznie stosuj profil po podłączeniu zewnętrznego ekranu.",
+  "homeAutoApplyBlackoutTitle": "Wycisz ekran telefonu",
+  "homeAutoApplyBlackoutSubtitle": "Zmniejsza jasność ekranu do zera po podłączeniu (zalecane dla AMOLED)",
   "homePermissionsRequiredDialogTitle": "Wymagane uprawnienia",
   "homePermissionsRequiredDialogMessage": "Wymuszenie orientacji poziomej wymaga przyznania obu uprawnień specjalnych:",
   "homePermissionDisplayOverApps": "• Wyświetlanie nad innymi aplikacjami",

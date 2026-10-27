@@ -126,6 +126,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Aplica seu perfil automaticamente quando uma tela externa for conectada.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'Apagar tela do celular';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Reduz o brilho da tela a zero ao conectar (recomendado para AMOLED)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'Permissões necessárias';
 
   @override
@@ -1008,6 +1015,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get homeAutoApplyDescription =>
       'Aplica seu perfil automaticamente quando uma tela externa for conectada.';
+
+  @override
+  String get homeAutoApplyBlackoutTitle => 'Apagar tela do celular';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Reduz o brilho da tela a zero ao conectar (recomendado para AMOLED)';
 
   @override
   String get homePermissionsRequiredDialogTitle => 'Permissões necessárias';

@@ -123,6 +123,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Apply your profile automatically when an external display connects.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'Blackout phone screen';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Dims phone display to zero on connect (AMOLED recommended)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'Permissions required';
 
   @override

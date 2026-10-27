@@ -35,6 +35,8 @@
   "homeAutoApplyTitle": "모니터 연결 시 자동 적용",
   "homeAutoApplyWatching": "백그라운드에서 외부 디스플레이 연결 감시 중.",
   "homeAutoApplyDescription": "외부 디스플레이가 연결되면 설정한 프로필을 자동으로 적용합니다.",
+  "homeAutoApplyBlackoutTitle": "휴대폰 화면 끄기",
+  "homeAutoApplyBlackoutSubtitle": "연결 시 화면 밝기를 0으로 낮춥니다 (AMOLED 권장)",
   "homePermissionsRequiredDialogTitle": "권한 필요",
   "homePermissionsRequiredDialogMessage": "가로 모드 강제 실행을 활성화하려면 두 가지 특수 권한을 모두 허용해야 합니다:",
   "homePermissionDisplayOverApps": "• 다른 앱 위에 표시",

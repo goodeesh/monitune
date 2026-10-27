@@ -121,6 +121,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Harici bir ekran bağlandığında profilinizi otomatik olarak uygulayın.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'Telefon ekranını karart';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Bağlandığında ekran parlaklığını sıfıra indirir (AMOLED önerilir)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'İzinler gerekli';
 
   @override

@@ -126,6 +126,13 @@ class AppLocalizationsEs extends AppLocalizations {
       'Aplica tu perfil automáticamente cuando se conecte una pantalla externa.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'Apagar pantalla del teléfono';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Atenúa la pantalla a cero al conectar (recomendado para AMOLED)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'Permisos necesarios';
 
   @override

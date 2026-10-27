@@ -126,6 +126,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'Pas je profiel automatisch toe zodra er een extern scherm wordt aangesloten.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'Telefoonscherm verduisteren';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Zet schermhelderheid op nul bij verbinding (AMOLED aanbevolen)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'Machtigingen vereist';
 
   @override

@@ -35,6 +35,8 @@
   "homeAutoApplyTitle": "連接螢幕時自動套用",
   "homeAutoApplyWatching": "正在背景監控外接螢幕連線。",
   "homeAutoApplyDescription": "外接螢幕連線時自動套用設定檔。",
+  "homeAutoApplyBlackoutTitle": "熄滅手機螢幕",
+  "homeAutoApplyBlackoutSubtitle": "連線時將手機螢幕亮度調至最低（建議 AMOLED 螢幕）",
   "homePermissionsRequiredDialogTitle": "需要授予權限",
   "homePermissionsRequiredDialogMessage": "必須授予下列兩項特殊權限後方可啟用強制橫向：",
   "homePermissionDisplayOverApps": "• 顯示在其他應用程式上層",

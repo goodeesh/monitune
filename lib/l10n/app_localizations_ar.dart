@@ -121,6 +121,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'تطبيق الملف التعريفي تلقائياً عند توصيل شاشة خارجية.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'إعتام شاشة الهاتف';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'يخفض سطوع الشاشة إلى الصفر عند الاتصال (موصى به لشاشات AMOLED)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'الأذونات مطلوبة';
 
   @override

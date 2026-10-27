@@ -125,6 +125,13 @@ class AppLocalizationsRu extends AppLocalizations {
       'Автоматически применять профиль при подключении внешнего экрана.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'Затемнять экран телефона';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Снижает яркость экрана до нуля при подключении (рекомендуется для AMOLED)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'Требуются разрешения';
 
   @override

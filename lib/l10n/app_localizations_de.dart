@@ -126,6 +126,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wendet dein Profil automatisch an, sobald ein externes Display verbunden ist.';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'Telefonbildschirm abdunkeln';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'Dunkelt den Bildschirm beim Verbinden komplett ab (AMOLED empfohlen)';
+
+  @override
   String get homePermissionsRequiredDialogTitle =>
       'Berechtigungen erforderlich';
 

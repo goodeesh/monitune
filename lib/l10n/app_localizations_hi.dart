@@ -125,6 +125,13 @@ class AppLocalizationsHi extends AppLocalizations {
       'बाहरी डिस्प्ले कनेक्ट होने पर अपनी प्रोफ़ाइल स्वतः लागू करें।';
 
   @override
+  String get homeAutoApplyBlackoutTitle => 'फ़ोन स्क्रीन बंद करें';
+
+  @override
+  String get homeAutoApplyBlackoutSubtitle =>
+      'कनेक्ट होने पर स्क्रीन की चमक शून्य कर देता है (AMOLED के लिए अनुशंसित)';
+
+  @override
   String get homePermissionsRequiredDialogTitle => 'अनुमतियां आवश्यक हैं';
 
   @override
