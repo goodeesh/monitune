@@ -9,7 +9,8 @@ import android.util.Log
 /** Re-arms the external-display watcher after a reboot if the user enabled it. */
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
-        if (intent?.action != Intent.ACTION_BOOT_COMPLETED) return
+        val action = intent?.action
+        if (action != Intent.ACTION_BOOT_COMPLETED && action != Intent.ACTION_MY_PACKAGE_REPLACED) return
 
         if (ExternalDisplayService.connectedExternalDisplay(context) == null || !ExternalDisplayService.isEnabled(context)) {
             ExternalDisplayService.restoreBlackout(context)

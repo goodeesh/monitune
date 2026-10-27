@@ -85,4 +85,36 @@ void main() {
     expect(capturedArgs, isNotNull);
     expect(capturedArgs!['blackoutPhone'], isTrue);
   });
+
+  test('initialize revives auto watch if autoApplyOnExternalDisplay was enabled but watch was not running', () async {
+    SharedPreferences.setMockInitialValues({
+      'auto_apply_external': true,
+      'auto_blackout_external': true,
+    });
+    bool watchStarted = false;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      const MethodChannel('com.goodeesh.monitune/core'),
+      (call) async {
+        switch (call.method) {
+          case 'isExternalDisplayWatchRunning':
+            return false;
+          case 'startExternalDisplayWatch':
+            watchStarted = true;
+            return true;
+          case 'getDisplayStatus':
+            return <String, dynamic>{};
+          case 'isBatteryOptimized':
+            return false;
+          default:
+            return null;
+        }
+      },
+    );
+
+    final state = AppState();
+    await state.initialize();
+
+    expect(state.autoApplyOnExternalDisplay, isTrue);
+    expect(watchStarted, isTrue);
+  });
 }

@@ -8,11 +8,20 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ServiceInfo
+import android.graphics.Color
+import android.graphics.PixelFormat
 import android.hardware.display.DisplayManager
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.Display
+import android.view.Gravity
+import android.view.MotionEvent
+import android.view.View
+import android.view.WindowManager
 import com.goodeesh.monitune.MainActivity
 import com.goodeesh.monitune.R
 import kotlin.concurrent.thread
@@ -52,6 +61,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         private const val KEY_BLACKOUT = "blackoutPhone"
         private const val KEY_SAVED_BRIGHTNESS = "savedBrightness"
         private const val KEY_SAVED_BRIGHTNESS_MODE = "savedBrightnessMode"
+        private const val KEY_SAVED_EXTRA_DIM = "savedExtraDim"
         private const val KEY_BLACKOUT_ACTIVE = "isBlackoutActive"
 
         private const val CHANNEL_ID = "monitune_watch"
@@ -59,6 +69,9 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
 
         @Volatile
         private var running = false
+
+        @Volatile
+        private var currentInstance: ExternalDisplayService? = null
 
         fun isEnabled(context: Context): Boolean =
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY_ENABLED, false)
@@ -69,23 +82,33 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         fun isRunning(): Boolean = running
 
         fun restoreBlackout(context: Context) {
+            currentInstance?.runOnMainThread { currentInstance?.removeBlackoutOverlay() }
             val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             if (!prefs.getBoolean(KEY_BLACKOUT_ACTIVE, false)) return
             val savedBrightness = prefs.getInt(KEY_SAVED_BRIGHTNESS, -1)
             val savedMode = prefs.getInt(KEY_SAVED_BRIGHTNESS_MODE, -1)
+            val savedExtraDim = prefs.getInt(KEY_SAVED_EXTRA_DIM, -1)
             try {
                 val targetBrightness = if (savedBrightness >= 0) savedBrightness else 128
                 Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, targetBrightness)
                 if (savedMode >= 0) {
                     Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, savedMode)
                 }
-                Log.i(TAG, "Restored screen brightness=$targetBrightness mode=$savedMode")
+                if (savedExtraDim >= 0) {
+                    try {
+                        Settings.Secure.putInt(context.contentResolver, "reduce_bright_colors_activated", savedExtraDim)
+                    } catch (e: Throwable) {
+                        Log.w(TAG, "Failed to restore extra dim: ${e.message}")
+                    }
+                }
+                Log.i(TAG, "Restored screen brightness=$targetBrightness mode=$savedMode extraDim=$savedExtraDim")
             } catch (e: Throwable) {
                 Log.e(TAG, "Failed to restore screen brightness", e)
             } finally {
                 prefs.edit()
                     .remove(KEY_SAVED_BRIGHTNESS)
                     .remove(KEY_SAVED_BRIGHTNESS_MODE)
+                    .remove(KEY_SAVED_EXTRA_DIM)
                     .putBoolean(KEY_BLACKOUT_ACTIVE, false)
                     .apply()
             }
@@ -133,10 +156,16 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
     private var listening = false
     private var wasConnected = false
 
+    private var blackoutOverlayView: View? = null
+    private var blackoutWindowManager: WindowManager? = null
+    private val blackoutHandler = Handler(Looper.getMainLooper())
+    private var blackoutDismissRunnable: Runnable? = null
+
     override fun onBind(intent: Intent?): IBinder? = null
 
     override fun onCreate() {
         super.onCreate()
+        currentInstance = this
         displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
         if (connectedExternalDisplay(this) == null) {
             restoreBlackout(this)
@@ -196,23 +225,114 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         try {
             val currentBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, 128)
             val currentMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC)
+            val currentExtraDim = try {
+                Settings.Secure.getInt(contentResolver, "reduce_bright_colors_activated", 0)
+            } catch (_: Throwable) { -1 }
 
             prefs.edit()
                 .putInt(KEY_SAVED_BRIGHTNESS, currentBrightness)
                 .putInt(KEY_SAVED_BRIGHTNESS_MODE, currentMode)
+                .putInt(KEY_SAVED_EXTRA_DIM, currentExtraDim)
                 .putBoolean(KEY_BLACKOUT_ACTIVE, true)
                 .apply()
 
             Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
             Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, 0)
-            Log.i(TAG, "Applied screen blackout: brightness 0 (saved: $currentBrightness, mode: $currentMode)")
+            if (currentExtraDim >= 0) {
+                try {
+                    Settings.Secure.putInt(contentResolver, "reduce_bright_colors_activated", 1)
+                } catch (e: Throwable) {
+                    Log.w(TAG, "Failed to activate extra dim: ${e.message}")
+                }
+            }
+            Log.i(TAG, "Applied screen blackout: brightness 0, extraDim 1 (saved: brightness=$currentBrightness, mode=$currentMode, extraDim=$currentExtraDim)")
+            runOnMainThread {
+                applyBlackoutOverlay()
+            }
         } catch (e: Throwable) {
             Log.e(TAG, "Failed to apply screen blackout", e)
             prefs.edit()
                 .remove(KEY_SAVED_BRIGHTNESS)
                 .remove(KEY_SAVED_BRIGHTNESS_MODE)
+                .remove(KEY_SAVED_EXTRA_DIM)
                 .putBoolean(KEY_BLACKOUT_ACTIVE, false)
                 .apply()
+        }
+    }
+
+    fun runOnMainThread(action: () -> Unit) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            action()
+        } else {
+            blackoutHandler.post(action)
+        }
+    }
+
+    private fun applyBlackoutOverlay() {
+        if (blackoutOverlayView != null) return
+        try {
+            val defaultDisplay = displayManager.getDisplay(Display.DEFAULT_DISPLAY) ?: return
+            val displayContext = createDisplayContext(defaultDisplay)
+            val wm = displayContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+            blackoutWindowManager = wm
+
+            val view = View(displayContext).apply {
+                setBackgroundColor(Color.BLACK)
+            }
+
+            var lastTapTime = 0L
+            view.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    val now = System.currentTimeMillis()
+                    if (now - lastTapTime < 400) {
+                        Log.i(TAG, "Double-tap on blackout overlay: temporarily lifting overlay for 10s")
+                        view.visibility = View.GONE
+                        blackoutDismissRunnable?.let { blackoutHandler.removeCallbacks(it) }
+                        val runnable = Runnable {
+                            val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+                            if (prefs.getBoolean(KEY_BLACKOUT_ACTIVE, false)) {
+                                view.visibility = View.VISIBLE
+                            }
+                        }
+                        blackoutDismissRunnable = runnable
+                        blackoutHandler.postDelayed(runnable, 10000)
+                    }
+                    lastTapTime = now
+                }
+                true
+            }
+
+            val params = WindowManager.LayoutParams(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
+                    or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+                PixelFormat.OPAQUE,
+            ).apply {
+                gravity = Gravity.FILL
+            }
+
+            wm.addView(view, params)
+            blackoutOverlayView = view
+            Log.i(TAG, "Blackout overlay added on DEFAULT_DISPLAY")
+        } catch (e: Throwable) {
+            Log.w(TAG, "Failed to add blackout overlay: ${e.message}")
+        }
+    }
+
+    fun removeBlackoutOverlay() {
+        blackoutDismissRunnable?.let { blackoutHandler.removeCallbacks(it) }
+        blackoutDismissRunnable = null
+        val view = blackoutOverlayView ?: return
+        val wm = blackoutWindowManager
+        blackoutOverlayView = null
+        blackoutWindowManager = null
+        try {
+            wm?.removeView(view)
+            Log.i(TAG, "Blackout overlay removed")
+        } catch (e: Throwable) {
+            Log.w(TAG, "Failed to remove blackout overlay: ${e.message}")
         }
     }
 
@@ -358,7 +478,11 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
     }
 
     override fun onDestroy() {
+        runOnMainThread {
+            removeBlackoutOverlay()
+        }
         restoreBlackout(this)
+        currentInstance = null
         if (listening) {
             try {
                 displayManager.unregisterDisplayListener(this)
@@ -366,6 +490,9 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             listening = false
         }
         running = false
+        try {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+        } catch (_: Throwable) {}
         super.onDestroy()
     }
 }

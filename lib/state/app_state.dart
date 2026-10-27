@@ -337,6 +337,9 @@ class AppState extends ChangeNotifier {
     await loadDeviceInfo();
     await refreshBatteryOptimization();
     await refreshAutoWatchStatus();
+    if (_autoApplyOnExternalDisplay && !_isAutoWatchRunning) {
+      await _startWatch();
+    }
     await refreshWallpaperSeed();
   }
 

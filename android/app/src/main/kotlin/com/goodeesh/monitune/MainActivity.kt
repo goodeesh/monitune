@@ -234,7 +234,7 @@ class MainActivity : FlutterActivity() {
 
                 "stopExternalDisplayWatch" -> {
                     ExternalDisplayService.setEnabled(this, false)
-                    startDisplayWatchService(ExternalDisplayService.ACTION_STOP)
+                    stopDisplayWatchService()
                     result.success(true)
                 }
 
@@ -296,6 +296,14 @@ class MainActivity : FlutterActivity() {
             }
         } catch (e: Throwable) {
             Log.w(TAG, "Failed to start display watch service: ${e.message}")
+        }
+    }
+
+    private fun stopDisplayWatchService() {
+        try {
+            stopService(Intent(this, ExternalDisplayService::class.java))
+        } catch (e: Throwable) {
+            Log.w(TAG, "Failed to stop display watch service: ${e.message}")
         }
     }
 
