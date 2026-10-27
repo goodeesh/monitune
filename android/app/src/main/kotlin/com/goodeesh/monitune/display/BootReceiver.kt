@@ -10,6 +10,11 @@ import android.util.Log
 class BootReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent?.action != Intent.ACTION_BOOT_COMPLETED) return
+
+        if (ExternalDisplayService.connectedExternalDisplay(context) == null) {
+            ExternalDisplayService.restoreBlackout(context)
+        }
+
         if (!ExternalDisplayService.isEnabled(context)) return
         try {
             val service = Intent(context, ExternalDisplayService::class.java)

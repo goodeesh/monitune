@@ -11,6 +11,7 @@ import android.content.pm.ServiceInfo
 import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.IBinder
+import android.provider.Settings
 import android.util.Log
 import com.goodeesh.monitune.MainActivity
 import com.goodeesh.monitune.R
@@ -38,6 +39,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         const val EXTRA_FORCE_LANDSCAPE = "forceLandscape"
         const val EXTRA_APPLY_DENSITY = "applyDensity"
         const val EXTRA_AUTO_RESET = "autoReset"
+        const val EXTRA_BLACKOUT = "blackoutPhone"
 
         private const val PREFS = "monitune_auto"
         private const val KEY_ENABLED = "enabled"
@@ -48,6 +50,9 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         private const val KEY_APPLY_DENSITY = "applyDensity"
         private const val KEY_AUTO_RESET = "autoReset"
         private const val KEY_BLACKOUT = "blackoutPhone"
+        private const val KEY_SAVED_BRIGHTNESS = "savedBrightness"
+        private const val KEY_SAVED_BRIGHTNESS_MODE = "savedBrightnessMode"
+        private const val KEY_BLACKOUT_ACTIVE = "isBlackoutActive"
 
         private const val CHANNEL_ID = "monitune_watch"
         private const val NOTIFICATION_ID = 4101
@@ -58,7 +63,34 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         fun isEnabled(context: Context): Boolean =
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY_ENABLED, false)
 
+        fun isBlackoutEnabled(context: Context): Boolean =
+            context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).getBoolean(KEY_BLACKOUT, false)
+
         fun isRunning(): Boolean = running
+
+        fun restoreBlackout(context: Context) {
+            val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            if (!prefs.getBoolean(KEY_BLACKOUT_ACTIVE, false)) return
+            val savedBrightness = prefs.getInt(KEY_SAVED_BRIGHTNESS, -1)
+            val savedMode = prefs.getInt(KEY_SAVED_BRIGHTNESS_MODE, -1)
+            try {
+                if (savedBrightness >= 0) {
+                    Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS, savedBrightness)
+                }
+                if (savedMode >= 0) {
+                    Settings.System.putInt(context.contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, savedMode)
+                }
+                Log.i(TAG, "Restored screen brightness=$savedBrightness mode=$savedMode")
+            } catch (e: Throwable) {
+                Log.e(TAG, "Failed to restore screen brightness", e)
+            } finally {
+                prefs.edit()
+                    .remove(KEY_SAVED_BRIGHTNESS)
+                    .remove(KEY_SAVED_BRIGHTNESS_MODE)
+                    .putBoolean(KEY_BLACKOUT_ACTIVE, false)
+                    .apply()
+            }
+        }
 
         fun setEnabled(context: Context, enabled: Boolean) {
             context.getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit()
@@ -114,6 +146,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         when (intent?.action) {
             ACTION_STOP -> {
                 getSharedPreferences(PREFS, Context.MODE_PRIVATE).edit().putBoolean(KEY_ENABLED, false).apply()
+                restoreBlackout(this)
                 stopWatching()
                 return START_NOT_STICKY
             }
@@ -148,8 +181,32 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             .putBoolean(KEY_FORCE_LANDSCAPE, intent.getBooleanExtra(EXTRA_FORCE_LANDSCAPE, prefs.getBoolean(KEY_FORCE_LANDSCAPE, true)))
             .putBoolean(KEY_APPLY_DENSITY, intent.getBooleanExtra(EXTRA_APPLY_DENSITY, prefs.getBoolean(KEY_APPLY_DENSITY, true)))
             .putBoolean(KEY_AUTO_RESET, intent.getBooleanExtra(EXTRA_AUTO_RESET, prefs.getBoolean(KEY_AUTO_RESET, true)))
+            .putBoolean(KEY_BLACKOUT, intent.getBooleanExtra(EXTRA_BLACKOUT, prefs.getBoolean(KEY_BLACKOUT, false)))
             .putBoolean(KEY_ENABLED, true)
             .apply()
+    }
+
+    private fun applyBlackout() {
+        val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+        if (!prefs.getBoolean(KEY_BLACKOUT, false)) return
+        if (prefs.getBoolean(KEY_BLACKOUT_ACTIVE, false)) return
+
+        try {
+            val currentBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, 128)
+            val currentMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC)
+
+            prefs.edit()
+                .putInt(KEY_SAVED_BRIGHTNESS, currentBrightness)
+                .putInt(KEY_SAVED_BRIGHTNESS_MODE, currentMode)
+                .putBoolean(KEY_BLACKOUT_ACTIVE, true)
+                .apply()
+
+            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)
+            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, 0)
+            Log.i(TAG, "Applied screen blackout: brightness 0 (saved: $currentBrightness, mode: $currentMode)")
+        } catch (e: Throwable) {
+            Log.e(TAG, "Failed to apply screen blackout", e)
+        }
     }
 
     private fun startWatching() {
@@ -182,9 +239,20 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             wasConnected = true
             Log.i(TAG, "External display connected — applying profile")
             applyStoredProfile()
+            applyBlackout()
+        } else if (connected && wasConnected) {
+            val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            val blackoutRequested = prefs.getBoolean(KEY_BLACKOUT, false)
+            val blackoutActive = prefs.getBoolean(KEY_BLACKOUT_ACTIVE, false)
+            if (blackoutRequested && !blackoutActive) {
+                applyBlackout()
+            } else if (!blackoutRequested && blackoutActive) {
+                restoreBlackout(this)
+            }
         } else if (!connected && wasConnected) {
             wasConnected = false
             Log.i(TAG, "External display disconnected")
+            restoreBlackout(this)
             if (autoReset()) {
                 OrientationLock.release(this)
                 thread(name = "monitune-auto-reset") {
@@ -283,6 +351,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
     }
 
     override fun onDestroy() {
+        restoreBlackout(this)
         if (listening) {
             try {
                 displayManager.unregisterDisplayListener(this)
