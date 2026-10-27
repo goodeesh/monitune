@@ -126,7 +126,7 @@ class AppLocalizationsFr extends AppLocalizations {
       'Applique automatiquement votre profil lorsqu\'un écran externe est connecté.';
 
   @override
-  String get homeAutoApplyBlackoutTitle => 'Écran du téléphone noir';
+  String get homeAutoApplyBlackoutTitle => 'Assombrir l\'écran du téléphone';
 
   @override
   String get homeAutoApplyBlackoutSubtitle =>
