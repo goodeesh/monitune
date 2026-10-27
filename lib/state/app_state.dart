@@ -18,6 +18,8 @@ class AppState extends ChangeNotifier {
     _initPrefs();
   }
 
+  Future<void> init() => _initPrefs();
+
   Future<void> _initPrefs() async {
     try {
       _prefs = await SharedPreferences.getInstance();
@@ -32,6 +34,7 @@ class AppState extends ChangeNotifier {
       _autoResetOnExit = _prefs?.getBool('display_auto_reset_on_exit') ?? true;
       _autoApplyOnExternalDisplay = _prefs?.getBool('auto_apply_external') ?? false;
       _autoResetOnDisconnect = _prefs?.getBool('auto_reset_on_disconnect') ?? true;
+      _blackoutOnConnect = _prefs?.getBool('auto_blackout_external') ?? false;
       final savedSeed = _prefs?.getInt('appearance_seed');
       if (savedSeed != null) _accentSeed = Color(savedSeed);
       _useWallpaper = _prefs?.getBool('appearance_wallpaper') ?? false;
@@ -112,6 +115,7 @@ class AppState extends ChangeNotifier {
 
   // ── Auto-apply on external display ──
   bool _autoApplyOnExternalDisplay = false;
+  bool _blackoutOnConnect = false;
   bool _autoResetOnDisconnect = true;
   bool _isAutoWatchRunning = false;
   String? _externalDisplayName;
@@ -119,6 +123,7 @@ class AppState extends ChangeNotifier {
   Timer? _testCountdownTimer;
 
   bool get autoApplyOnExternalDisplay => _autoApplyOnExternalDisplay;
+  bool get blackoutOnConnect => _blackoutOnConnect;
   bool get autoResetOnDisconnect => _autoResetOnDisconnect;
   bool get isAutoWatchRunning => _isAutoWatchRunning;
   String? get externalDisplayName => _externalDisplayName;
@@ -390,13 +395,28 @@ class AppState extends ChangeNotifier {
   Future<void> setAutoApplyOnExternalDisplay(bool enabled) async {
     _autoApplyOnExternalDisplay = enabled;
     await _prefs?.setBool('auto_apply_external', enabled);
+    if (!enabled) {
+      _blackoutOnConnect = false;
+      await _prefs?.setBool('auto_blackout_external', false);
+    }
     notifyListeners();
     if (enabled) {
       await _startWatch();
     } else {
-      await MonitunePlatform.stopExternalDisplayWatch();
+      try {
+        await MonitunePlatform.stopExternalDisplayWatch();
+      } catch (_) {}
       _isAutoWatchRunning = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> setBlackoutOnConnect(bool enabled) async {
+    _blackoutOnConnect = enabled;
+    await _prefs?.setBool('auto_blackout_external', enabled);
+    notifyListeners();
+    if (_autoApplyOnExternalDisplay && _isAutoWatchRunning) {
+      await _updateWatch();
     }
   }
 
@@ -408,31 +428,37 @@ class AppState extends ChangeNotifier {
   }
 
   Future<void> _startWatch() async {
-    final (width, height) = effectiveResolution;
-    final ok = await MonitunePlatform.startExternalDisplayWatch(
-      width: width,
-      height: height,
-      scalePercent: _uiScalePercent,
-      forceLandscape: _forceLandscape,
-      applyDensity: !_launcherSafeDisplay,
-      autoReset: _autoResetOnDisconnect,
-    );
-    _isAutoWatchRunning = ok && await MonitunePlatform.isExternalDisplayWatchRunning();
-    notifyListeners();
+    try {
+      final (width, height) = effectiveResolution;
+      final ok = await MonitunePlatform.startExternalDisplayWatch(
+        width: width,
+        height: height,
+        scalePercent: _uiScalePercent,
+        forceLandscape: _forceLandscape,
+        applyDensity: !_launcherSafeDisplay,
+        autoReset: _autoResetOnDisconnect,
+        blackoutPhone: _blackoutOnConnect,
+      );
+      _isAutoWatchRunning = ok && await MonitunePlatform.isExternalDisplayWatchRunning();
+      notifyListeners();
+    } catch (_) {}
   }
 
   Future<void> _updateWatch() async {
-    final (width, height) = effectiveResolution;
-    await MonitunePlatform.updateExternalDisplayWatch(
-      width: width,
-      height: height,
-      scalePercent: _uiScalePercent,
-      forceLandscape: _forceLandscape,
-      applyDensity: !_launcherSafeDisplay,
-      autoReset: _autoResetOnDisconnect,
-    );
-    _isAutoWatchRunning = await MonitunePlatform.isExternalDisplayWatchRunning();
-    notifyListeners();
+    try {
+      final (width, height) = effectiveResolution;
+      await MonitunePlatform.updateExternalDisplayWatch(
+        width: width,
+        height: height,
+        scalePercent: _uiScalePercent,
+        forceLandscape: _forceLandscape,
+        applyDensity: !_launcherSafeDisplay,
+        autoReset: _autoResetOnDisconnect,
+        blackoutPhone: _blackoutOnConnect,
+      );
+      _isAutoWatchRunning = await MonitunePlatform.isExternalDisplayWatchRunning();
+      notifyListeners();
+    } catch (_) {}
   }
 
   Future<void> refreshAutoWatchStatus() async {

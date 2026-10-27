@@ -152,6 +152,7 @@ class MonitunePlatform {
     required bool forceLandscape,
     required bool applyDensity,
     required bool autoReset,
+    bool blackoutPhone = false,
   }) async {
     final result = await _channel.invokeMethod<bool>('startExternalDisplayWatch', {
       'width': width,
@@ -160,6 +161,7 @@ class MonitunePlatform {
       'forceLandscape': forceLandscape,
       'applyDensity': applyDensity,
       'autoReset': autoReset,
+      'blackoutPhone': blackoutPhone,
     });
     return result ?? false;
   }
@@ -171,6 +173,7 @@ class MonitunePlatform {
     required bool forceLandscape,
     required bool applyDensity,
     required bool autoReset,
+    bool blackoutPhone = false,
   }) async {
     final result = await _channel.invokeMethod<bool>('updateExternalDisplayWatch', {
       'width': width,
@@ -179,6 +182,7 @@ class MonitunePlatform {
       'forceLandscape': forceLandscape,
       'applyDensity': applyDensity,
       'autoReset': autoReset,
+      'blackoutPhone': blackoutPhone,
     });
     return result ?? false;
   }
