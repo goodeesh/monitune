@@ -1,4 +1,6 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:monitune/services/platform_bridge.dart';
 import 'package:monitune/state/app_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -33,5 +35,54 @@ void main() {
     await state.setAutoApplyOnExternalDisplay(false);
     expect(state.autoApplyOnExternalDisplay, isFalse);
     expect(state.blackoutOnConnect, isFalse);
+
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getBool('auto_blackout_external'), isFalse);
+  });
+
+  test('blackoutOnConnect resets to false if autoApplyOnExternalDisplay is false on init', () async {
+    SharedPreferences.setMockInitialValues({
+      'auto_apply_external': false,
+      'auto_blackout_external': true,
+    });
+    final state = AppState();
+    await state.init();
+
+    expect(state.autoApplyOnExternalDisplay, isFalse);
+    expect(state.blackoutOnConnect, isFalse);
+  });
+
+  test('AppState.init memoizes its Future', () {
+    SharedPreferences.setMockInitialValues({});
+    final state = AppState();
+    final f1 = state.init();
+    final f2 = state.init();
+    expect(identical(f1, f2), isTrue);
+  });
+
+  test('startExternalDisplayWatch forwards blackoutPhone in method call arguments', () async {
+    Map<String, dynamic>? capturedArgs;
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger.setMockMethodCallHandler(
+      const MethodChannel('com.goodeesh.monitune/core'),
+      (call) async {
+        if (call.method == 'startExternalDisplayWatch') {
+          capturedArgs = Map<String, dynamic>.from(call.arguments as Map);
+        }
+        return true;
+      },
+    );
+
+    await MonitunePlatform.startExternalDisplayWatch(
+      width: 1920,
+      height: 1080,
+      scalePercent: 100,
+      forceLandscape: true,
+      applyDensity: true,
+      autoReset: true,
+      blackoutPhone: true,
+    );
+
+    expect(capturedArgs, isNotNull);
+    expect(capturedArgs!['blackoutPhone'], isTrue);
   });
 }

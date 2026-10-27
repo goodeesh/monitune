@@ -138,6 +138,9 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
     override fun onCreate() {
         super.onCreate()
         displayManager = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+        if (connectedExternalDisplay(this) == null) {
+            restoreBlackout(this)
+        }
         createChannel()
     }
 

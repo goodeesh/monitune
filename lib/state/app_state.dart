@@ -13,12 +13,13 @@ class AppState extends ChangeNotifier {
   String? _selectedLanguageCode;
 
   SharedPreferences? _prefs;
+  Future<void>? _initFuture;
 
   AppState() {
-    _initPrefs();
+    _initFuture = _initPrefs();
   }
 
-  Future<void> init() => _initPrefs();
+  Future<void> init() => _initFuture ??= _initPrefs();
 
   Future<void> _initPrefs() async {
     try {
@@ -35,6 +36,9 @@ class AppState extends ChangeNotifier {
       _autoApplyOnExternalDisplay = _prefs?.getBool('auto_apply_external') ?? false;
       _autoResetOnDisconnect = _prefs?.getBool('auto_reset_on_disconnect') ?? true;
       _blackoutOnConnect = _prefs?.getBool('auto_blackout_external') ?? false;
+      if (!_autoApplyOnExternalDisplay) {
+        _blackoutOnConnect = false;
+      }
       final savedSeed = _prefs?.getInt('appearance_seed');
       if (savedSeed != null) _accentSeed = Color(savedSeed);
       _useWallpaper = _prefs?.getBool('appearance_wallpaper') ?? false;
