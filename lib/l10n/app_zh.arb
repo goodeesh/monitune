@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% 对应原生 PC 密度，不会放大手机端微件。",
   "displayKeepUiDensityTitle": "保持 Android 界面密度 (保护桌面)",
   "displayKeepUiDensitySubtitle": "仅更改分辨率而不修改 Android 密度，防止 MIUI/HyperOS 桌面图标排列错乱。",
+  "displayScaleDensityTitle": "密度随分辨率等比缩放",
+  "displayScaleDensitySubtitle": "按与分辨率相同的比例调整密度，界面尺寸保持不变，不会被压缩。需先开启上方开关。",
   "displayLauncherSafeMode": "桌面保护模式",
   "displayLauncherSafeModeDesc": "保持 MIUI/HyperOS 桌面图标网格排列完整",
   "displayForceLandscape": "强制横屏",

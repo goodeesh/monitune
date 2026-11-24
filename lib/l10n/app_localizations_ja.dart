@@ -362,6 +362,12 @@ class AppLocalizationsJa extends AppLocalizations {
       '解像度のみを変更しAndroidの画面密度を維持することで、MIUI/HyperOSのホーム画面アイコンの崩れを防ぎます。';
 
   @override
+  String get displayScaleDensityTitle => '解像度に合わせて密度を拡大縮小';
+
+  @override
+  String get displayScaleDensitySubtitle => '解像度と同じ比率で密度を調整し、UI の大きさを保ちます。';
+
+  @override
   String get displayLauncherSafeMode => 'ランチャー保護モード';
 
   @override

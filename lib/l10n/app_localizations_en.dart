@@ -372,6 +372,13 @@ class AppLocalizationsEn extends AppLocalizations {
       'Applies the resolution but leaves Android density untouched, so MIUI/HyperOS home-screen icons stay put.';
 
   @override
+  String get displayScaleDensityTitle => 'Scale density with resolution';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Scales the density by the same factor as the resolution, so the UI keeps its size instead of cramming.';
+
+  @override
   String get displayLauncherSafeMode => 'Launcher-safe mode';
 
   @override

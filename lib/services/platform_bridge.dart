@@ -50,14 +50,14 @@ class MonitunePlatform {
     required int height,
     required int scalePercent,
     bool forceLandscape = true,
-    bool applyDensity = true,
+    String densityMode = 'scale',
   }) async {
     final result = await _channel.invokeMethod<bool>('applyDisplayProfile', {
       'width': width,
       'height': height,
       'scalePercent': scalePercent,
       'forceLandscape': forceLandscape,
-      'applyDensity': applyDensity,
+      'densityMode': densityMode,
     });
     return result ?? false;
   }
@@ -150,7 +150,7 @@ class MonitunePlatform {
     required int height,
     required int scalePercent,
     required bool forceLandscape,
-    required bool applyDensity,
+    required String densityMode,
     required bool autoReset,
     required bool blackoutPhone,
   }) async {
@@ -159,7 +159,7 @@ class MonitunePlatform {
       'height': height,
       'scalePercent': scalePercent,
       'forceLandscape': forceLandscape,
-      'applyDensity': applyDensity,
+      'densityMode': densityMode,
       'autoReset': autoReset,
       'blackoutPhone': blackoutPhone,
     });
@@ -171,7 +171,7 @@ class MonitunePlatform {
     required int height,
     required int scalePercent,
     required bool forceLandscape,
-    required bool applyDensity,
+    required String densityMode,
     required bool autoReset,
     required bool blackoutPhone,
   }) async {
@@ -180,7 +180,7 @@ class MonitunePlatform {
       'height': height,
       'scalePercent': scalePercent,
       'forceLandscape': forceLandscape,
-      'applyDensity': applyDensity,
+      'densityMode': densityMode,
       'autoReset': autoReset,
       'blackoutPhone': blackoutPhone,
     });

@@ -377,6 +377,13 @@ class AppLocalizationsVi extends AppLocalizations {
       'Áp dụng độ phân giải nhưng giữ nguyên mật độ hiển thị Android, giúp bố cục biểu tượng màn hình chính MIUI/HyperOS không bị xáo trộn.';
 
   @override
+  String get displayScaleDensityTitle => 'Tỉ lệ mật độ theo độ phân giải';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Điều chỉnh mật độ theo cùng tỉ lệ với độ phân giải để giao diện giữ nguyên kích thước, không bị nén.';
+
+  @override
   String get displayLauncherSafeMode => 'Chế độ an toàn cho trình khởi chạy';
 
   @override

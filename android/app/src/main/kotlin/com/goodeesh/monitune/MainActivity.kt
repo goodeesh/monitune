@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.util.Log
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import com.goodeesh.monitune.display.DisplayInfo
 import com.goodeesh.monitune.display.DisplaySafetyWatchdog
@@ -103,10 +104,10 @@ class MainActivity : FlutterActivity() {
                     val height = call.argument<Int>("height") ?: 1080
                     val scalePercent = call.argument<Int>("scalePercent") ?: 100
                     val forceLandscape = call.argument<Boolean>("forceLandscape") ?: true
-                    val applyDensity = call.argument<Boolean>("applyDensity") ?: true
+                    val densityMode = call.argument<String>("densityMode") ?: densityModeLegacy(call)
                     thread {
                         val ok = ShizukuDisplayManager.applyDisplayProfile(
-                            this, width, height, scalePercent, forceLandscape, applyDensity,
+                            this, width, height, scalePercent, forceLandscape, densityMode,
                         )
                         runOnUiThread { result.success(ok) }
                     }
@@ -206,7 +207,7 @@ class MainActivity : FlutterActivity() {
                         height = call.argument<Int>("height") ?: 1080,
                         scale = call.argument<Int>("scalePercent") ?: 100,
                         forceLandscape = call.argument<Boolean>("forceLandscape") ?: true,
-                        applyDensity = call.argument<Boolean>("applyDensity") ?: true,
+                        densityMode = call.argument<String>("densityMode") ?: densityModeLegacy(call),
                         autoReset = call.argument<Boolean>("autoReset") ?: true,
                         blackout = call.argument<Boolean>("blackoutPhone") ?: false,
                         enabled = true,
@@ -223,7 +224,7 @@ class MainActivity : FlutterActivity() {
                         height = call.argument<Int>("height") ?: 1080,
                         scale = call.argument<Int>("scalePercent") ?: 100,
                         forceLandscape = call.argument<Boolean>("forceLandscape") ?: true,
-                        applyDensity = call.argument<Boolean>("applyDensity") ?: true,
+                        densityMode = call.argument<String>("densityMode") ?: densityModeLegacy(call),
                         autoReset = call.argument<Boolean>("autoReset") ?: true,
                         blackout = call.argument<Boolean>("blackoutPhone") ?: false,
                         enabled = true,
@@ -257,6 +258,14 @@ class MainActivity : FlutterActivity() {
             }
         }
     }
+
+    /** Maps the pre-1.3 `applyDensity` boolean onto the new density modes. */
+    private fun densityModeLegacy(call: MethodCall): String =
+        if (call.argument<Boolean>("applyDensity") == false) {
+            ShizukuDisplayManager.DENSITY_MODE_KEEP
+        } else {
+            ShizukuDisplayManager.DENSITY_MODE_SCALE
+        }
 
     private fun autoHardenPhantomKiller() {
         thread(name = "ppk-harden") {

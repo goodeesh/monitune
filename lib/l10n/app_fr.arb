@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100 % correspond à la densité native PC sans agrandir les widgets mobiles.",
   "displayKeepUiDensityTitle": "Conserver la densité de l'interface Android (mode sécurisé)",
   "displayKeepUiDensitySubtitle": "Applique la résolution sans toucher à la densité Android, afin de préserver l'agencement des icônes du lanceur MIUI/HyperOS.",
+  "displayScaleDensityTitle": "Adapter la densité à la résolution",
+  "displayScaleDensitySubtitle": "Met la densité à l’échelle de la résolution, pour que l’interface garde sa taille au lieu d’être tassée.",
   "displayLauncherSafeMode": "Mode sécurisé pour le lanceur",
   "displayLauncherSafeModeDesc": "Préserve la grille d'icônes du lanceur MIUI/HyperOS",
   "displayForceLandscape": "Forcer le mode paysage",

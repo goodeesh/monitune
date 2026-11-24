@@ -376,6 +376,13 @@ class AppLocalizationsDe extends AppLocalizations {
       'Wendet die Auflösung an, belässt aber die Android-Dichte unverändert, damit MIUI/HyperOS-Startbildschirmsymbole an ihrem Platz bleiben.';
 
   @override
+  String get displayScaleDensityTitle => 'Dichte mit der Auflösung skalieren';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Skaliert die Dichte im selben Verhältnis wie die Auflösung, damit die Oberfläche ihre Größe behält und nicht gestaucht wird.';
+
+  @override
   String get displayLauncherSafeMode => 'Launcher-Schutzmodus';
 
   @override

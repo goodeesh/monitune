@@ -371,6 +371,13 @@ class AppLocalizationsTr extends AppLocalizations {
       'Çözünürlüğü uygular ancak Android yoğunluğuna dokunmaz, böylece MIUI/HyperOS ana ekran simge düzeni bozulmaz.';
 
   @override
+  String get displayScaleDensityTitle => 'Yoğunluğu çözünürlükle ölçekle';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Yoğunluğu çözünürlükle aynı oranda ölçekler; arayüz sıkışmak yerine boyutunu korur.';
+
+  @override
   String get displayLauncherSafeMode => 'Başlatıcı güvenli modu';
 
   @override

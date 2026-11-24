@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% mang lại mật độ máy tính chuẩn mà không làm phóng đại tiện ích di động.",
   "displayKeepUiDensityTitle": "Giữ nguyên mật độ giao diện Android (An toàn cho trình khởi chạy)",
   "displayKeepUiDensitySubtitle": "Áp dụng độ phân giải nhưng giữ nguyên mật độ hiển thị Android, giúp bố cục biểu tượng màn hình chính MIUI/HyperOS không bị xáo trộn.",
+  "displayScaleDensityTitle": "Tỉ lệ mật độ theo độ phân giải",
+  "displayScaleDensitySubtitle": "Điều chỉnh mật độ theo cùng tỉ lệ với độ phân giải để giao diện giữ nguyên kích thước, không bị nén.",
   "displayLauncherSafeMode": "Chế độ an toàn cho trình khởi chạy",
   "displayLauncherSafeModeDesc": "Giữ nguyên lưới biểu tượng của trình khởi chạy MIUI/HyperOS",
   "displayForceLandscape": "Bắt buộc xoay ngang",

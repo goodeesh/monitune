@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% дает родную плотность интерфейса ПК без увеличения мобильных виджетов.",
   "displayKeepUiDensityTitle": "Сохранять плотность интерфейса Android (защита лаунчера)",
   "displayKeepUiDensitySubtitle": "Применяет разрешение, не изменяя плотность Android, благодаря чему значки на рабочем столе MIUI/HyperOS остаются на своих местах.",
+  "displayScaleDensityTitle": "Масштабировать плотность вместе с разрешением",
+  "displayScaleDensitySubtitle": "Масштабирует плотность вместе с разрешением, чтобы интерфейс сохранял размер, а не сжимался.",
   "displayLauncherSafeMode": "Безопасный режим лаунчера",
   "displayLauncherSafeModeDesc": "Сохраняет сетку значков лаунчера MIUI/HyperOS нетронутой",
   "displayForceLandscape": "Принудительный альбомный режим",

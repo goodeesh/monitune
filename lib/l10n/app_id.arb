@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% memberikan kepadatan PC tanpa memperbesar widget ponsel.",
   "displayKeepUiDensityTitle": "Pertahankan Kepadatan UI Android (Aman untuk Peluncur)",
   "displayKeepUiDensitySubtitle": "Menerapkan resolusi tanpa mengubah kepadatan Android, sehingga tata letak ikon layar utama MIUI/HyperOS tidak berantakan.",
+  "displayScaleDensityTitle": "Skalakan kepadatan dengan resolusi",
+  "displayScaleDensitySubtitle": "Menyesuaikan kepadatan dengan rasio yang sama seperti resolusi agar UI tetap berukuran sama, tidak berdesakan.",
   "displayLauncherSafeMode": "Mode aman peluncur",
   "displayLauncherSafeModeDesc": "Menjaga tata letak kisi ikon peluncur MIUI/HyperOS tetap utuh",
   "displayForceLandscape": "Paksa Lanskap",
