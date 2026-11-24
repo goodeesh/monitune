@@ -314,7 +314,17 @@ object ShizukuDisplayManager {
             success = executePrivilegedCommand(context, cmd)
         }
         if (success) {
-            setOrientationOverride(context, forceLandscape)
+            if (forceLandscape) {
+                // WindowManager re-evaluates the display rotation while it applies
+                // the size/density override and clears the display-wide
+                // orientation flags, so the lock is re-asserted only after the
+                // change has settled.
+                try {
+                    Thread.sleep(500)
+                } catch (_: InterruptedException) {
+                }
+            }
+            applyLandscapeAfterDisplayChange(context, forceLandscape)
             isCustomDisplayActive = true
             if (enableWatchdog) {
                 DisplaySafetyWatchdog.notifyDisplayProfileApplied(context)
@@ -323,9 +333,31 @@ object ShizukuDisplayManager {
         return success
     }
 
+    /**
+     * Re-asserts the landscape lock after the size/density change. Writing the
+     * rotation settings from the app is not enough on every ROM, so when a
+     * privileged shell is available the same values are also written through it
+     * — the overlay service alone does not survive a display reconfiguration.
+     * [OrientationLock] captures the user's own values first, so the reset paths
+     * can still put them back.
+     */
+    private fun applyLandscapeAfterDisplayChange(context: Context, forceLandscape: Boolean) {
+        if (!forceLandscape) return
+        OrientationLock.applyRotationSettings(context, true)
+        if (hasPrivilegedShell(context)) {
+            // The display reconfiguration clears the display-wide orientation
+            // flags, so re-assert them after the size/density change, not before.
+            setOrientationOverride(context, true)
+            runPrivilegedShell(
+                context,
+                "settings put system accelerometer_rotation 0 && settings put system user_rotation 1",
+            )
+        }
+    }
+
     fun resetDisplay(context: Context): Boolean {
         Log.i(TAG, "Resetting display to native defaults")
-        val cmd = "wm size reset && wm density reset && settings put system accelerometer_rotation 1 && content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:1"
+        val cmd = "wm size reset && wm density reset"
 
         var success = false
         if (hasWriteSecureSettings(context)) {
@@ -337,6 +369,9 @@ object ShizukuDisplayManager {
         if (!success) {
             success = executePrivilegedCommand(context, cmd)
         }
+        // The rotation settings are restored independently of the size/density
+        // reset: they are the user's own state, not part of the profile.
+        OrientationLock.restoreRotationSettings(context)
         if (success) {
             setOrientationOverride(context, false)
             isCustomDisplayActive = false
@@ -525,13 +560,15 @@ object ShizukuDisplayManager {
      */
     private fun enableOrientationCommands(): List<String> = listOf(
         "wm set-ignore-orientation-request -d 0 true",
-        "settings put system accelerometer_rotation 0; settings put system user_rotation 1",
     )
 
-    /** Reverses the best-effort shell levers. */
+    /**
+     * Reverses the best-effort shell levers. The rotation settings themselves
+     * are put back by [OrientationLock.restoreRotationSettings], so they are
+     * not touched here — a plain "auto-rotate on" would lose the user's lock.
+     */
     private fun disableOrientationCommands(): List<String> = listOf(
         "wm set-ignore-orientation-request -d 0 false",
-        "settings put system accelerometer_rotation 1",
     )
 
     /** Live state of the orientation override (not persisted across reboots). */
