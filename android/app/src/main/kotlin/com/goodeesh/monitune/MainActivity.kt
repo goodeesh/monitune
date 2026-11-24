@@ -44,9 +44,27 @@ class MainActivity : FlutterActivity() {
     }
 
     override fun onDestroy() {
+        // "Auto-Reset Resolution on Exit" was only persisted by the Dart side;
+        // honour it here so leaving the app also puts the rotation lock back.
+        if (isFinishing && shouldResetOnExit()) {
+            val app = applicationContext
+            thread(name = "monitune-exit-reset") {
+                OrientationLock.release(app)
+                ShizukuDisplayManager.resetDisplay(app)
+            }
+        }
         DisplaySafetyWatchdog.unregister(this)
         ShizukuDisplayManager.cleanup()
         super.onDestroy()
+    }
+
+    /** Reads the Dart preference `display_auto_reset_on_exit`. */
+    private fun shouldResetOnExit(): Boolean = try {
+        ShizukuDisplayManager.isCustomDisplayActive &&
+            getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
+                .getBoolean("flutter.display_auto_reset_on_exit", false)
+    } catch (e: Throwable) {
+        false
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
