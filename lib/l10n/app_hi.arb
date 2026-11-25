@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% मोबाइल विजेट को बड़ा किए बिना मूल पीसी डेंसिटी देता है।",
   "displayKeepUiDensityTitle": "Android UI डेंसिटी बनाए रखें (लॉन्चर-सुरक्षित)",
   "displayKeepUiDensitySubtitle": "रिज़ॉल्यूशन लागू करता है लेकिन Android डेंसिटी को नहीं बदलता, जिससे MIUI/HyperOS होम-स्क्रीन आइकन सुरक्षित रहते हैं।",
+  "displayScaleDensityTitle": "रिज़ॉल्यूशन के साथ घनत्व स्केल करें",
+  "displayScaleDensitySubtitle": "रिज़ॉल्यूशन के समान अनुपात में घनत्व समायोजित करता है, ताकि UI सिकुड़ने के बजाय अपना आकार बनाए रखे।",
   "displayLauncherSafeMode": "लॉन्चर-सुरक्षित मोड",
   "displayLauncherSafeModeDesc": "MIUI/HyperOS लॉन्चर आइकन ग्रिड को अक्षुण्ण रखता है",
   "displayForceLandscape": "फ़ोर्स लैंडस्केप",

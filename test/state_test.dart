@@ -78,7 +78,7 @@ void main() {
       height: 1080,
       scalePercent: 100,
       forceLandscape: true,
-      applyDensity: true,
+      densityMode: 'scale',
       autoReset: true,
       blackoutPhone: true,
     );

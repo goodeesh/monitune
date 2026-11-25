@@ -27,6 +27,9 @@ MoniTune fixes those three things. It is display-only: it does not touch audio.
 - **UI scale** — 75% to 200%, with the resulting DPI shown live.
 - **Launcher-safe mode** — applies the resolution but leaves density untouched, so
   launcher icons stay put.
+- **Proportional density** — with launcher-safe mode on, optionally scale the
+  density by the same factor as the resolution (1440p @ 600 DPI becomes 1080p @
+  450 DPI), so the UI keeps its size instead of cramping.
 - **Force Landscape** — an invisible overlay holds landscape over apps that lock
   portrait, including the HyperOS launcher. Needs "Display over other apps" and
   "Modify system settings"; applied on **Apply Test Profile**, and it needs no

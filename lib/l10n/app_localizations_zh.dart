@@ -359,6 +359,13 @@ class AppLocalizationsZh extends AppLocalizations {
       '仅更改分辨率而不修改 Android 密度，防止 MIUI/HyperOS 桌面图标排列错乱。';
 
   @override
+  String get displayScaleDensityTitle => '密度随分辨率等比缩放';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      '按与分辨率相同的比例调整密度，界面尺寸保持不变，不会被压缩。需先开启上方开关。';
+
+  @override
   String get displayLauncherSafeMode => '桌面保护模式';
 
   @override
@@ -1185,6 +1192,13 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   @override
   String get displayKeepUiDensitySubtitle =>
       '僅變更解析度而不修改 Android 密度，防止 MIUI/HyperOS 桌面圖示排列錯亂。';
+
+  @override
+  String get displayScaleDensityTitle => '密度隨解析度等比縮放';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      '按與解析度相同的比例調整密度，介面尺寸保持不變，不會被壓縮。需先開啟上方開關。';
 
   @override
   String get displayLauncherSafeMode => '桌面保護模式';

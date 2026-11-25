@@ -4,6 +4,22 @@ All notable changes to MoniTune are recorded here. Versions before 1.0.0 were
 development builds published to GitHub Releases; 1.0.0 is the first release
 intended to sit and be used.
 
+## Unreleased
+
+### Added
+- **Proportional density**: with launcher-safe mode on, density can now follow the
+  resolution by the same factor (1440p @ 600 DPI becomes 1080p @ 450 DPI) instead
+  of staying at the 1440p value, which kept the UI from cramping while still
+  protecting the launcher grid.
+- **Auto-reset on exit** now actually resets the display (it was only persisted).
+
+### Fixed
+- **Rotation lock was not restored**: resetting the display (manually, on
+  disconnect, on exit, or through the safety timeout) now puts back the
+  auto-rotate/user-rotation settings that Force Landscape changed, instead of
+  always leaving auto-rotate on. The previous values are captured before the
+  lock is applied and restored exactly.
+
 ## 1.2.1
 
 ### Fixed

@@ -373,6 +373,13 @@ class AppLocalizationsId extends AppLocalizations {
       'Menerapkan resolusi tanpa mengubah kepadatan Android, sehingga tata letak ikon layar utama MIUI/HyperOS tidak berantakan.';
 
   @override
+  String get displayScaleDensityTitle => 'Skalakan kepadatan dengan resolusi';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Menyesuaikan kepadatan dengan rasio yang sama seperti resolusi agar UI tetap berukuran sama, tidak berdesakan.';
+
+  @override
   String get displayLauncherSafeMode => 'Mode aman peluncur';
 
   @override

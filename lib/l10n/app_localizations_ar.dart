@@ -369,6 +369,13 @@ class AppLocalizationsAr extends AppLocalizations {
       'يطبق الدقة مع إبقاء كثافة Android دون تغيير، لمنع تبعثر أيقونات شاشة MIUI/HyperOS الرئيسية.';
 
   @override
+  String get displayScaleDensityTitle => 'تحجيم الكثافة مع الدقة';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'يضبط الكثافة بالنسبة نفسها التي تتغير بها الدقة، لتحافظ الواجهة على حجمها بدلًا من التزاحم.';
+
+  @override
   String get displayLauncherSafeMode => 'الوضع الآمن للمشغل';
 
   @override

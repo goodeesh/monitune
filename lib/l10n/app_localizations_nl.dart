@@ -376,6 +376,13 @@ class AppLocalizationsNl extends AppLocalizations {
       'Past de resolutie aan maar laat de Android-dichtheid ongemoeid, zodat MIUI/HyperOS-startschermiconen netjes op hun plek blijven.';
 
   @override
+  String get displayScaleDensityTitle => 'Dichtheid mee schalen met resolutie';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Schaalt de dichtheid mee met de resolutie, zodat de interface zijn formaat houdt in plaats van samengeperst te worden.';
+
+  @override
   String get displayLauncherSafeMode => 'Veilige modus voor launcher';
 
   @override

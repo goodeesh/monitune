@@ -518,6 +518,14 @@
   "@displayKeepUiDensitySubtitle": {
     "description": "Switch subtitle describing the launcher-safe density behavior"
   },
+  "displayScaleDensityTitle": "Scale density with resolution",
+  "@displayScaleDensityTitle": {
+    "description": "Switch title for scaling the Android UI density proportionally with the chosen resolution (only used while launcher-safe mode is on)"
+  },
+  "displayScaleDensitySubtitle": "Scales the density by the same factor as the resolution, so the UI keeps its size instead of cramming.",
+  "@displayScaleDensitySubtitle": {
+    "description": "Switch subtitle explaining proportional density scaling"
+  },
   "displayLauncherSafeMode": "Launcher-safe mode",
   "@displayLauncherSafeMode": {
     "description": "Short toggle title for launcher-safe mode"

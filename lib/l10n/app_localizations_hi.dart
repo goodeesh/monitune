@@ -375,6 +375,13 @@ class AppLocalizationsHi extends AppLocalizations {
       'रिज़ॉल्यूशन लागू करता है लेकिन Android डेंसिटी को नहीं बदलता, जिससे MIUI/HyperOS होम-स्क्रीन आइकन सुरक्षित रहते हैं।';
 
   @override
+  String get displayScaleDensityTitle => 'रिज़ॉल्यूशन के साथ घनत्व स्केल करें';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'रिज़ॉल्यूशन के समान अनुपात में घनत्व समायोजित करता है, ताकि UI सिकुड़ने के बजाय अपना आकार बनाए रखे।';
+
+  @override
   String get displayLauncherSafeMode => 'लॉन्चर-सुरक्षित मोड';
 
   @override

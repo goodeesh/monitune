@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% geeft de standaardschermdichtheid van een pc zonder mobiele widgets te vergroten.",
   "displayKeepUiDensityTitle": "Android-UI-dichtheid behouden (launcher-veilig)",
   "displayKeepUiDensitySubtitle": "Past de resolutie aan maar laat de Android-dichtheid ongemoeid, zodat MIUI/HyperOS-startschermiconen netjes op hun plek blijven.",
+  "displayScaleDensityTitle": "Dichtheid mee schalen met resolutie",
+  "displayScaleDensitySubtitle": "Schaalt de dichtheid mee met de resolutie, zodat de interface zijn formaat houdt in plaats van samengeperst te worden.",
   "displayLauncherSafeMode": "Veilige modus voor launcher",
   "displayLauncherSafeModeDesc": "Houdt het pictogrammenraster van de MIUI/HyperOS-launcher intact",
   "displayForceLandscape": "Liggend forceren",

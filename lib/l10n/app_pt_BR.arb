@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% oferece a densidade nativa de PC sem ampliar os widgets do celular.",
   "displayKeepUiDensityTitle": "Manter densidade da UI do Android (seguro para o inicializador)",
   "displayKeepUiDensitySubtitle": "Aplica a resolução, mas não altera a densidade do Android, mantendo a organização dos ícones da tela inicial do MIUI/HyperOS.",
+  "displayScaleDensityTitle": "Escalar a densidade com a resolução",
+  "displayScaleDensitySubtitle": "Escala a densidade na mesma proporção da resolução, para a interface manter o tamanho em vez de ficar comprimida.",
   "displayLauncherSafeMode": "Modo seguro do inicializador",
   "displayLauncherSafeModeDesc": "Mantém intacta a grade de ícones do inicializador MIUI/HyperOS",
   "displayForceLandscape": "Forçar modo paisagem",

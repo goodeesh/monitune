@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "%100, mobil araçları büyütmeden doğal masaüstü yoğunluğunu sunar.",
   "displayKeepUiDensityTitle": "Android Arayüz Yoğunluğunu Koru (Başlatıcı Güvenli)",
   "displayKeepUiDensitySubtitle": "Çözünürlüğü uygular ancak Android yoğunluğuna dokunmaz, böylece MIUI/HyperOS ana ekran simge düzeni bozulmaz.",
+  "displayScaleDensityTitle": "Yoğunluğu çözünürlükle ölçekle",
+  "displayScaleDensitySubtitle": "Yoğunluğu çözünürlükle aynı oranda ölçekler; arayüz sıkışmak yerine boyutunu korur.",
   "displayLauncherSafeMode": "Başlatıcı güvenli modu",
   "displayLauncherSafeModeDesc": "MIUI/HyperOS başlatıcı simge ızgarasını korur",
   "displayForceLandscape": "Yatay Modu Zorla",

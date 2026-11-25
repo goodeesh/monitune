@@ -377,6 +377,13 @@ class AppLocalizationsPt extends AppLocalizations {
       'Aplica a resolução, mas não altera a densidade do Android, mantendo a organização dos ícones da tela inicial do MIUI/HyperOS.';
 
   @override
+  String get displayScaleDensityTitle => 'Escalar a densidade com a resolução';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Escala a densidade na mesma proporção da resolução, para a interface manter o tamanho em vez de ficar comprimida.';
+
+  @override
   String get displayLauncherSafeMode => 'Modo seguro do inicializador';
 
   @override
@@ -1266,6 +1273,13 @@ class AppLocalizationsPtBr extends AppLocalizationsPt {
   @override
   String get displayKeepUiDensitySubtitle =>
       'Aplica a resolução, mas não altera a densidade do Android, mantendo a organização dos ícones da tela inicial do MIUI/HyperOS.';
+
+  @override
+  String get displayScaleDensityTitle => 'Escalar a densidade com a resolução';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Escala a densidade na mesma proporção da resolução, para a interface manter o tamanho em vez de ficar comprimida.';
 
   @override
   String get displayLauncherSafeMode => 'Modo seguro do inicializador';

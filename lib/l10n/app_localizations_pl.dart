@@ -378,6 +378,14 @@ class AppLocalizationsPl extends AppLocalizations {
       'Stosuje rozdzielczość bez modyfikacji zagęszczenia Androida, dzięki czemu ikony na pulpicie MIUI/HyperOS nie zostaną poprzesuwane.';
 
   @override
+  String get displayScaleDensityTitle =>
+      'Skaluj gęstość wraz z rozdzielczością';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Skaluje gęstość wraz z rozdzielczością, dzięki czemu interfejs zachowuje rozmiar zamiast się ściskać.';
+
+  @override
   String get displayLauncherSafeMode => 'Bezpieczny tryb launchera';
 
   @override

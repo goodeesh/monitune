@@ -38,6 +38,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         const val EXTRA_SCALE = "scale"
         const val EXTRA_FORCE_LANDSCAPE = "forceLandscape"
         const val EXTRA_APPLY_DENSITY = "applyDensity"
+        const val EXTRA_DENSITY_MODE = "densityMode"
         const val EXTRA_AUTO_RESET = "autoReset"
         const val EXTRA_BLACKOUT = "blackoutPhone"
 
@@ -48,6 +49,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         private const val KEY_SCALE = "scale"
         private const val KEY_FORCE_LANDSCAPE = "forceLandscape"
         private const val KEY_APPLY_DENSITY = "applyDensity"
+        private const val KEY_DENSITY_MODE = "densityMode"
         private const val KEY_AUTO_RESET = "autoReset"
         private const val KEY_BLACKOUT = "blackoutPhone"
         private const val KEY_SAVED_BRIGHTNESS = "savedBrightness"
@@ -103,7 +105,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
             height: Int,
             scale: Int,
             forceLandscape: Boolean,
-            applyDensity: Boolean,
+            densityMode: String,
             autoReset: Boolean,
             blackout: Boolean = false,
             enabled: Boolean,
@@ -113,7 +115,8 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
                 .putInt(KEY_HEIGHT, height)
                 .putInt(KEY_SCALE, scale)
                 .putBoolean(KEY_FORCE_LANDSCAPE, forceLandscape)
-                .putBoolean(KEY_APPLY_DENSITY, applyDensity)
+                .putString(KEY_DENSITY_MODE, densityMode)
+                .putBoolean(KEY_APPLY_DENSITY, densityMode != ShizukuDisplayManager.DENSITY_MODE_KEEP)
                 .putBoolean(KEY_AUTO_RESET, autoReset)
                 .putBoolean(KEY_BLACKOUT, blackout)
                 .putBoolean(KEY_ENABLED, enabled)
@@ -275,7 +278,13 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
         val height = prefs.getInt(KEY_HEIGHT, 1080)
         val scale = prefs.getInt(KEY_SCALE, 100)
         val landscape = prefs.getBoolean(KEY_FORCE_LANDSCAPE, true)
-        val density = prefs.getBoolean(KEY_APPLY_DENSITY, true)
+        // Older versions only stored the boolean; map it when the string is absent.
+        val densityMode = prefs.getString(KEY_DENSITY_MODE, null)
+            ?: if (prefs.getBoolean(KEY_APPLY_DENSITY, true)) {
+                ShizukuDisplayManager.DENSITY_MODE_SCALE
+            } else {
+                ShizukuDisplayManager.DENSITY_MODE_KEEP
+            }
         if (landscape) {
             enableOrientationLock()
         }
@@ -286,7 +295,7 @@ class ExternalDisplayService : Service(), DisplayManager.DisplayListener {
                 height,
                 scale,
                 landscape,
-                density,
+                densityMode,
                 enableWatchdog = false,
             )
         }

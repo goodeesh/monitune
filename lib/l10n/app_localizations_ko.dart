@@ -362,6 +362,12 @@ class AppLocalizationsKo extends AppLocalizations {
       '해상도만 적용하고 Android 화면 밀도는 유지하여 MIUI/HyperOS 홈 화면 아이콘 배치가 흩어지지 않도록 방지합니다.';
 
   @override
+  String get displayScaleDensityTitle => '해상도에 맞춰 밀도 조정';
+
+  @override
+  String get displayScaleDensitySubtitle => '해상도와 같은 비율로 밀도를 조정해 UI 크기를 유지합니다.';
+
+  @override
   String get displayLauncherSafeMode => '런처 안전 모드';
 
   @override

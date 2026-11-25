@@ -301,7 +301,7 @@ class _DisplayScreenState extends State<DisplayScreen> {
                   borderRadius: BorderRadius.circular(MoniTuneTheme.radiusSm),
                 ),
                 child: Text(
-                  context.l10n.displayDpiValue(state.calculatedDpi),
+                  context.l10n.displayDpiValue(state.previewDensityDpi),
                   style: tokens.bodySm.copyWith(
                     color: tokens.primary,
                     fontWeight: FontWeight.bold,
@@ -335,6 +335,24 @@ class _DisplayScreenState extends State<DisplayScreen> {
             ),
             value: state.launcherSafeDisplay,
             onChanged: state.setLauncherSafeDisplay,
+          ),
+          SwitchListTile(
+            contentPadding: EdgeInsets.zero,
+            title: Text(
+              context.l10n.displayScaleDensityTitle,
+              style: tokens.bodyMd.copyWith(
+                color: state.launcherSafeDisplay
+                    ? tokens.textPrimary
+                    : tokens.textMuted,
+              ),
+            ),
+            subtitle: Text(
+              context.l10n.displayScaleDensitySubtitle,
+              style: tokens.bodySm,
+            ),
+            value: state.densityScalesWithResolution,
+            onChanged:
+                state.launcherSafeDisplay ? state.setDensityScalesWithResolution : null,
           ),
         ],
       ),

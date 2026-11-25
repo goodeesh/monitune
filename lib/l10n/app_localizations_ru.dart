@@ -375,6 +375,14 @@ class AppLocalizationsRu extends AppLocalizations {
       'Применяет разрешение, не изменяя плотность Android, благодаря чему значки на рабочем столе MIUI/HyperOS остаются на своих местах.';
 
   @override
+  String get displayScaleDensityTitle =>
+      'Масштабировать плотность вместе с разрешением';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Масштабирует плотность вместе с разрешением, чтобы интерфейс сохранял размер, а не сжимался.';
+
+  @override
   String get displayLauncherSafeMode => 'Безопасный режим лаунчера';
 
   @override

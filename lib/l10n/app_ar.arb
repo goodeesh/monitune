@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% تمنح كثافة الكمبيوتر الأصلية دون تكبير أدوات واجهة الهاتف.",
   "displayKeepUiDensityTitle": "الحفاظ على كثافة واجهة Android (آمن للمشغل)",
   "displayKeepUiDensitySubtitle": "يطبق الدقة مع إبقاء كثافة Android دون تغيير، لمنع تبعثر أيقونات شاشة MIUI/HyperOS الرئيسية.",
+  "displayScaleDensityTitle": "تحجيم الكثافة مع الدقة",
+  "displayScaleDensitySubtitle": "يضبط الكثافة بالنسبة نفسها التي تتغير بها الدقة، لتحافظ الواجهة على حجمها بدلًا من التزاحم.",
   "displayLauncherSafeMode": "الوضع الآمن للمشغل",
   "displayLauncherSafeModeDesc": "يحافظ على شبكة أيقونات مشغل MIUI/HyperOS سليمة",
   "displayForceLandscape": "فرض الوضع الأفقي",

@@ -778,6 +778,18 @@ abstract class AppLocalizations {
   /// **'Applies the resolution but leaves Android density untouched, so MIUI/HyperOS home-screen icons stay put.'**
   String get displayKeepUiDensitySubtitle;
 
+  /// Switch title for scaling the Android UI density proportionally with the chosen resolution (only used while launcher-safe mode is on)
+  ///
+  /// In en, this message translates to:
+  /// **'Scale density with resolution'**
+  String get displayScaleDensityTitle;
+
+  /// Switch subtitle explaining proportional density scaling
+  ///
+  /// In en, this message translates to:
+  /// **'Scales the density by the same factor as the resolution, so the UI keeps its size instead of cramming.'**
+  String get displayScaleDensitySubtitle;
+
   /// Short toggle title for launcher-safe mode
   ///
   /// In en, this message translates to:

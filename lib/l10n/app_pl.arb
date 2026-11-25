@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% zapewnia natywne zagęszczenie interfejsu PC bez powiększania widżetów telefonu.",
   "displayKeepUiDensityTitle": "Zachowaj zagęszczenie UI Androida (ochrona launchera)",
   "displayKeepUiDensitySubtitle": "Stosuje rozdzielczość bez modyfikacji zagęszczenia Androida, dzięki czemu ikony na pulpicie MIUI/HyperOS nie zostaną poprzesuwane.",
+  "displayScaleDensityTitle": "Skaluj gęstość wraz z rozdzielczością",
+  "displayScaleDensitySubtitle": "Skaluje gęstość wraz z rozdzielczością, dzięki czemu interfejs zachowuje rozmiar zamiast się ściskać.",
   "displayLauncherSafeMode": "Bezpieczny tryb launchera",
   "displayLauncherSafeModeDesc": "Zachowuje nienaruszony układ siatki ikon launchera MIUI/HyperOS",
   "displayForceLandscape": "Wymuś orientację poziomą",

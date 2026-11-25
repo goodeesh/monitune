@@ -15,6 +15,7 @@ import com.goodeesh.monitune.privilege.RootShell
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import rikka.shizuku.Shizuku
 import java.io.BufferedReader
+import kotlin.math.roundToInt
 
 /**
  * Privileged display engine.
@@ -128,10 +129,96 @@ object ShizukuDisplayManager {
         return granted
     }
 
+    /** How the Android UI density follows the resolution. */
+    const val DENSITY_MODE_SCALE = "scale"
+    const val DENSITY_MODE_KEEP = "keep"
+    const val DENSITY_MODE_PROPORTIONAL = "proportional"
+
     /** Baseline 100% scale = 160 DPI. */
     fun calculateDensityDpi(scalePercent: Int): Int {
         val density = (160.0 * (scalePercent.coerceIn(50, 400) / 100.0)).toInt()
         return density.coerceIn(72, 640)
+    }
+
+    /**
+     * The density to apply for [densityMode], or null when the density must be
+     * left untouched.
+     *
+     *  - `scale`: 160 DPI at 100%, the desktop-like baseline the slider shows.
+     *  - `keep`: no density change (launcher-safe).
+     *  - `proportional`: scale the **current** density by the same factor as the
+     *    resolution, so the UI keeps its dp size (3200x1440 @ 600 -> 1920x1080
+     *    @ 450, and 1920x1080 @ 450 -> 2560x1440 @ 600 again). Both values are
+     *    read from the live display, not from a cached "native" pair: once a
+     *    size/density override is active, the reported mode already reflects it.
+     */
+    fun resolveDensityDpi(
+        context: Context,
+        scalePercent: Int,
+        densityMode: String,
+        targetLandscapeWidth: Int,
+        targetLandscapeHeight: Int,
+    ): Int? {
+        return when (densityMode) {
+            DENSITY_MODE_KEEP -> null
+            DENSITY_MODE_PROPORTIONAL -> {
+                val currentShort = currentShortSide(context).coerceAtLeast(1)
+                val targetShort = kotlin.math.min(targetLandscapeWidth, targetLandscapeHeight)
+                    .coerceAtLeast(1)
+                (currentDensityDpi(context) * (targetShort.toDouble() / currentShort))
+                    .roundToInt()
+                    .coerceIn(72, 640)
+            }
+            else -> calculateDensityDpi(scalePercent)
+        }
+    }
+
+    /** The density currently in effect, including any `wm density` override. */
+    fun currentDensityDpi(context: Context): Int {
+        val metrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+            .defaultDisplay.getRealMetrics(metrics)
+        return if (metrics.densityDpi > 0) metrics.densityDpi else calculateDensityDpi(100)
+    }
+
+    /** The screen's current short side in pixels, including any `wm size` override. */
+    fun currentShortSide(context: Context): Int {
+        val metrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+            .defaultDisplay.getRealMetrics(metrics)
+        return kotlin.math.min(metrics.widthPixels, metrics.heightPixels)
+    }
+
+    /**
+     * A size whose dp footprint equals the current one once [density] is
+     * applied: the current size scaled by density/currentDensity.
+     *
+     * The HyperOS/MIUI launcher restarts itself when the density changes and
+     * re-validates its icon grid against the configuration it finds at that
+     * moment. Changing the density at a size that does not preserve the dp
+     * footprint therefore makes it move the icons that no longer fit to the
+     * last page, and persists that move. Changing the density at this size
+     * keeps the grid identical; the final, width-only size change afterwards
+     * does not trigger another validation. Null when the density is unchanged.
+     */
+    private fun dpPreservingSize(context: Context, density: Int): Pair<Int, Int>? {
+        val metrics = DisplayMetrics()
+        @Suppress("DEPRECATION")
+        (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager)
+            .defaultDisplay.getRealMetrics(metrics)
+        if (metrics.densityDpi <= 0 || density == metrics.densityDpi) return null
+        val scale = density.toDouble() / metrics.densityDpi
+        return (metrics.widthPixels * scale).roundToInt() to
+            (metrics.heightPixels * scale).roundToInt()
+    }
+
+    private fun sleepQuietly(millis: Long) {
+        try {
+            Thread.sleep(millis)
+        } catch (_: InterruptedException) {
+        }
     }
 
     fun formatWmSizeForDevice(context: Context, targetLandscapeWidth: Int, targetLandscapeHeight: Int): String {
@@ -167,8 +254,9 @@ object ShizukuDisplayManager {
     /**
      * Applies target resolution and density.
      *
-     * @param applyDensity when false the Android UI density is left untouched
-     *   (launcher-safe mode), so MIUI/HyperOS home-screen icon grids stay put.
+     * @param densityMode how the UI density follows the resolution: keep it
+     *   untouched (launcher-safe), scale it proportionally so the dp size is
+     *   preserved, or use the explicit scale percentage (see [resolveDensityDpi]).
      */
     fun applyDisplayProfile(
         context: Context,
@@ -176,19 +264,39 @@ object ShizukuDisplayManager {
         height: Int,
         scalePercent: Int,
         forceLandscape: Boolean = true,
-        applyDensity: Boolean = true,
+        densityMode: String = DENSITY_MODE_SCALE,
         enableWatchdog: Boolean = true,
     ): Boolean {
-        val density = calculateDensityDpi(scalePercent)
+        val density = resolveDensityDpi(context, scalePercent, densityMode, width, height)
         val wmSizeStr = formatWmSizeForDevice(context, width, height)
-        val rotationCmd = if (forceLandscape) {
-            "settings put system accelerometer_rotation 0 && settings put system user_rotation 1 && content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0 && content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:1"
+        // HyperOS/MIUI restarts its launcher on every density change and then
+        // re-validates the icon grid at the size it finds. The density is
+        // therefore changed at a size that keeps the current dp footprint, with
+        // the steps spaced out so each configuration change is applied before
+        // the next one — the same timing as doing it by hand.
+        val intermediate = if (density != null) dpPreservingSize(context, density) else null
+        val parts = mutableListOf<String>()
+        if (intermediate != null && density != null) {
+            val midStr = formatWmSizeForDevice(context, intermediate.first, intermediate.second)
+            parts += "wm size $midStr"
+            parts += "sleep 0.6"
+            parts += "wm density $density"
+            parts += "sleep 0.6"
+            if (midStr != wmSizeStr) {
+                parts += "wm size $wmSizeStr"
+            }
         } else {
-            "settings put system accelerometer_rotation 1 && content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:1"
+            parts += "wm size $wmSizeStr"
+            if (density != null) {
+                parts += "wm density $density"
+            }
         }
-        val densityCmd = if (applyDensity) "wm density $density" else null
-        val cmd = listOfNotNull("wm size $wmSizeStr", densityCmd, rotationCmd).joinToString(" && ")
-        val densityLabel = if (applyDensity) "@ ${scalePercent}% (${density} DPI)" else "(density unchanged — launcher-safe)"
+        val cmd = parts.joinToString(" && ")
+        val densityLabel = when {
+            density == null -> "(density unchanged — launcher-safe)"
+            densityMode == DENSITY_MODE_PROPORTIONAL -> "(proportional $density DPI)"
+            else -> "@ ${scalePercent}% ($density DPI)"
+        }
         Log.i(TAG, "Applying display profile: $wmSizeStr $densityLabel, forceLandscape=$forceLandscape")
 
         if (!hasWriteSecureSettings(context)) {
@@ -197,7 +305,7 @@ object ShizukuDisplayManager {
 
         var success = false
         if (hasWriteSecureSettings(context)) {
-            success = applyDisplayProfileViaWss(context, width, height, scalePercent, applyDensity)
+            success = applyDisplayProfileViaWss(context, width, height, scalePercent, densityMode)
             if (!success) {
                 Log.w(TAG, "WSS display path failed, falling back to privileged shell")
             }
@@ -206,7 +314,17 @@ object ShizukuDisplayManager {
             success = executePrivilegedCommand(context, cmd)
         }
         if (success) {
-            setOrientationOverride(context, forceLandscape)
+            if (forceLandscape) {
+                // WindowManager re-evaluates the display rotation while it applies
+                // the size/density override and clears the display-wide
+                // orientation flags, so the lock is re-asserted only after the
+                // change has settled.
+                try {
+                    Thread.sleep(500)
+                } catch (_: InterruptedException) {
+                }
+            }
+            applyLandscapeAfterDisplayChange(context, forceLandscape)
             isCustomDisplayActive = true
             if (enableWatchdog) {
                 DisplaySafetyWatchdog.notifyDisplayProfileApplied(context)
@@ -215,9 +333,31 @@ object ShizukuDisplayManager {
         return success
     }
 
+    /**
+     * Re-asserts the landscape lock after the size/density change. Writing the
+     * rotation settings from the app is not enough on every ROM, so when a
+     * privileged shell is available the same values are also written through it
+     * — the overlay service alone does not survive a display reconfiguration.
+     * [OrientationLock] captures the user's own values first, so the reset paths
+     * can still put them back.
+     */
+    private fun applyLandscapeAfterDisplayChange(context: Context, forceLandscape: Boolean) {
+        if (!forceLandscape) return
+        OrientationLock.applyRotationSettings(context, true)
+        if (hasPrivilegedShell(context)) {
+            // The display reconfiguration clears the display-wide orientation
+            // flags, so re-assert them after the size/density change, not before.
+            setOrientationOverride(context, true)
+            runPrivilegedShell(
+                context,
+                "settings put system accelerometer_rotation 0 && settings put system user_rotation 1",
+            )
+        }
+    }
+
     fun resetDisplay(context: Context): Boolean {
         Log.i(TAG, "Resetting display to native defaults")
-        val cmd = "wm size reset && wm density reset && settings put system accelerometer_rotation 1 && content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:1"
+        val cmd = "wm size reset && wm density reset"
 
         var success = false
         if (hasWriteSecureSettings(context)) {
@@ -229,6 +369,9 @@ object ShizukuDisplayManager {
         if (!success) {
             success = executePrivilegedCommand(context, cmd)
         }
+        // The rotation settings are restored independently of the size/density
+        // reset: they are the user's own state, not part of the profile.
+        OrientationLock.restoreRotationSettings(context)
         if (success) {
             setOrientationOverride(context, false)
             isCustomDisplayActive = false
@@ -244,17 +387,31 @@ object ShizukuDisplayManager {
         width: Int,
         height: Int,
         scalePercent: Int,
-        applyDensity: Boolean = true,
+        densityMode: String = DENSITY_MODE_SCALE,
     ): Boolean {
-        val density = calculateDensityDpi(scalePercent)
+        val density = resolveDensityDpi(context, scalePercent, densityMode, width, height)
         val (naturalW, naturalH) = naturalSizeForDevice(context, width, height)
-        val densityLabel = if (applyDensity) "@ $density DPI" else "(density unchanged — launcher-safe)"
-        Log.i(TAG, "Applying via WMS binder: ${width}x$height (natural ${naturalW}x$naturalH) $densityLabel")
-        val okSize = callWindowManager("setForcedDisplaySize", 0, naturalW, naturalH)
-        val okDensity = if (applyDensity) {
-            callWindowManager("setForcedDisplayDensityForUser", 0, density, currentUserId())
+        val intermediate = if (density != null) dpPreservingSize(context, density) else null
+        val densityLabel = if (density != null) "@ $density DPI" else "(density unchanged — launcher-safe)"
+        Log.i(TAG, "Applying via WMS binder: ${width}x$height (natural ${naturalW}x$naturalH) $densityLabel mid=$intermediate")
+        // See the comment in [applyDisplayProfile]: change the density at a
+        // dp-preserving size, with each step settled before the next one.
+        var okSize: Boolean
+        var okDensity = true
+        if (intermediate != null && density != null) {
+            val (midW, midH) = naturalSizeForDevice(context, intermediate.first, intermediate.second)
+            okSize = callWindowManager("setForcedDisplaySize", 0, midW, midH)
+            sleepQuietly(600)
+            okDensity = callWindowManager("setForcedDisplayDensityForUser", 0, density, currentUserId())
+            sleepQuietly(600)
+            if (midW != naturalW || midH != naturalH) {
+                okSize = callWindowManager("setForcedDisplaySize", 0, naturalW, naturalH)
+            }
         } else {
-            true
+            okSize = callWindowManager("setForcedDisplaySize", 0, naturalW, naturalH)
+            if (density != null) {
+                okDensity = callWindowManager("setForcedDisplayDensityForUser", 0, density, currentUserId())
+            }
         }
         if (okSize && okDensity) {
             return true
@@ -265,6 +422,8 @@ object ShizukuDisplayManager {
 
     fun resetDisplayViaWss(context: Context): Boolean {
         Log.i(TAG, "Resetting display via WMS binder")
+        // Size first: the launcher restarts when the density changes, and it has
+        // to find the native size already in place — see [applyDisplayProfile].
         val okSize = callWindowManager("clearForcedDisplaySize", 0)
         val okDensity = callWindowManager("clearForcedDisplayDensityForUser", 0, currentUserId())
         if (okSize && okDensity) {
@@ -401,13 +560,15 @@ object ShizukuDisplayManager {
      */
     private fun enableOrientationCommands(): List<String> = listOf(
         "wm set-ignore-orientation-request -d 0 true",
-        "settings put system accelerometer_rotation 0; settings put system user_rotation 1",
     )
 
-    /** Reverses the best-effort shell levers. */
+    /**
+     * Reverses the best-effort shell levers. The rotation settings themselves
+     * are put back by [OrientationLock.restoreRotationSettings], so they are
+     * not touched here — a plain "auto-rotate on" would lose the user's lock.
+     */
     private fun disableOrientationCommands(): List<String> = listOf(
         "wm set-ignore-orientation-request -d 0 false",
-        "settings put system accelerometer_rotation 1",
     )
 
     /** Live state of the orientation override (not persisted across reboots). */

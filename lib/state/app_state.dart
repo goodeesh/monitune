@@ -33,6 +33,7 @@ class AppState extends ChangeNotifier {
       _uiScalePercent = _prefs?.getInt('display_ui_scale') ?? 100;
       _forceLandscape = _prefs?.getBool('display_force_landscape') ?? true;
       _launcherSafeDisplay = _prefs?.getBool('display_launcher_safe') ?? false;
+      _densityScalesWithResolution = _prefs?.getBool('display_density_scales') ?? false;
       _autoResetOnExit = _prefs?.getBool('display_auto_reset_on_exit') ?? true;
       _autoApplyOnExternalDisplay = _prefs?.getBool('auto_apply_external') ?? false;
       _autoResetOnDisconnect = _prefs?.getBool('auto_reset_on_disconnect') ?? true;
@@ -111,6 +112,7 @@ class AppState extends ChangeNotifier {
   int _uiScalePercent = 100;
   bool _forceLandscape = true;
   bool _launcherSafeDisplay = false;
+  bool _densityScalesWithResolution = false;
   bool _autoResetOnExit = true;
   bool _isTestingResolution = false;
 
@@ -120,8 +122,17 @@ class AppState extends ChangeNotifier {
   int get uiScalePercent => _uiScalePercent;
   bool get forceLandscape => _forceLandscape;
   bool get launcherSafeDisplay => _launcherSafeDisplay;
+  bool get densityScalesWithResolution => _densityScalesWithResolution;
   bool get autoResetOnExit => _autoResetOnExit;
   bool get isTestingResolution => _isTestingResolution;
+
+  /// How the Android UI density follows the resolution:
+  /// `scale` (the explicit percentage), `keep` (launcher-safe) or
+  /// `proportional` (scale the device density with the resolution).
+  String get densityMode {
+    if (!_launcherSafeDisplay) return 'scale';
+    return _densityScalesWithResolution ? 'proportional' : 'keep';
+  }
 
   // ── Auto-apply on external display ──
   bool _autoApplyOnExternalDisplay = false;
@@ -295,6 +306,35 @@ class AppState extends ChangeNotifier {
 
   int get calculatedDpi => ((160.0 * (_uiScalePercent / 100.0)).toInt()).clamp(72, 640);
 
+  /// The density currently in effect (including any override already applied).
+  int get _currentDensityDpi =>
+      (_status['densityDpi'] as num?)?.toInt() ?? calculatedDpi;
+
+  /// The screen's current short side in pixels (including any size override).
+  int get _currentShortSide {
+    final w = (_status['width'] as num?)?.toInt() ?? nativeWidth;
+    final h = (_status['height'] as num?)?.toInt() ?? nativeHeight;
+    return w < h ? w : h;
+  }
+
+  /// The density the current mode would apply, for the live DPI indicator.
+  int get previewDensityDpi {
+    switch (densityMode) {
+      case 'keep':
+        return _currentDensityDpi;
+      case 'proportional':
+        final (w, h) = effectiveResolution;
+        // Scale by the short side against the *current* display: this composes,
+        // so 1440p @ 600 -> 1080p gives 450 and 1080p @ 450 -> 1440p gives 600.
+        final targetShort = w < h ? w : h;
+        final currentShort = _currentShortSide;
+        if (currentShort <= 0) return calculatedDpi;
+        return (_currentDensityDpi * targetShort / currentShort).round().clamp(72, 640).toInt();
+      default:
+        return calculatedDpi;
+    }
+  }
+
   (int, int) get effectiveResolution {
     switch (_targetResolution) {
       case '720p':
@@ -396,6 +436,12 @@ class AppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setDensityScalesWithResolution(bool enabled) {
+    _densityScalesWithResolution = enabled;
+    _prefs?.setBool('display_density_scales', enabled);
+    notifyListeners();
+  }
+
   void setAutoResetOnExit(bool enabled) {
     _autoResetOnExit = enabled;
     _prefs?.setBool('display_auto_reset_on_exit', enabled);
@@ -447,7 +493,7 @@ class AppState extends ChangeNotifier {
         height: height,
         scalePercent: _uiScalePercent,
         forceLandscape: _forceLandscape,
-        applyDensity: !_launcherSafeDisplay,
+        densityMode: densityMode,
         autoReset: _autoResetOnDisconnect,
         blackoutPhone: _blackoutOnConnect,
       );
@@ -464,7 +510,7 @@ class AppState extends ChangeNotifier {
         height: height,
         scalePercent: _uiScalePercent,
         forceLandscape: _forceLandscape,
-        applyDensity: !_launcherSafeDisplay,
+        densityMode: densityMode,
         autoReset: _autoResetOnDisconnect,
         blackoutPhone: _blackoutOnConnect,
       );
@@ -514,7 +560,7 @@ class AppState extends ChangeNotifier {
       height: height,
       scalePercent: _uiScalePercent,
       forceLandscape: _forceLandscape,
-      applyDensity: !_launcherSafeDisplay,
+      densityMode: densityMode,
     );
 
     if (applied) {

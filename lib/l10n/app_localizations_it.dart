@@ -377,6 +377,13 @@ class AppLocalizationsIt extends AppLocalizations {
       'Applica la risoluzione senza modificare la densità Android, preservando la disposizione delle icone del launcher MIUI/HyperOS.';
 
   @override
+  String get displayScaleDensityTitle => 'Scala la densità con la risoluzione';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Scala la densità nella stessa proporzione della risoluzione, così l’interfaccia mantiene le sue dimensioni invece di comprimersi.';
+
+  @override
   String get displayLauncherSafeMode => 'Modalità sicura per il launcher';
 
   @override

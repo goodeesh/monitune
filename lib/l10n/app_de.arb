@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100% liefert native PC-Dichte ohne Vergrößerung von mobilen Widgets.",
   "displayKeepUiDensityTitle": "Android-UI-Dichte beibehalten (Launcher-Schutz)",
   "displayKeepUiDensitySubtitle": "Wendet die Auflösung an, belässt aber die Android-Dichte unverändert, damit MIUI/HyperOS-Startbildschirmsymbole an ihrem Platz bleiben.",
+  "displayScaleDensityTitle": "Dichte mit der Auflösung skalieren",
+  "displayScaleDensitySubtitle": "Skaliert die Dichte im selben Verhältnis wie die Auflösung, damit die Oberfläche ihre Größe behält und nicht gestaucht wird.",
   "displayLauncherSafeMode": "Launcher-Schutzmodus",
   "displayLauncherSafeModeDesc": "Hält das Symbolraster des MIUI/HyperOS-Launchers intakt",
   "displayForceLandscape": "Querformat erzwingen",

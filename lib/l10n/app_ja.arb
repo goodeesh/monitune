@@ -145,6 +145,8 @@
   "displayScaleNativeHint": "100%はモバイルウィジェットを拡大することなくPCネイティブの表示密度を再現します。",
   "displayKeepUiDensityTitle": "Android UI密度を維持 (ランチャー保護)",
   "displayKeepUiDensitySubtitle": "解像度のみを変更しAndroidの画面密度を維持することで、MIUI/HyperOSのホーム画面アイコンの崩れを防ぎます。",
+  "displayScaleDensityTitle": "解像度に合わせて密度を拡大縮小",
+  "displayScaleDensitySubtitle": "解像度と同じ比率で密度を調整し、UI の大きさを保ちます。",
   "displayLauncherSafeMode": "ランチャー保護モード",
   "displayLauncherSafeModeDesc": "MIUI/HyperOSのホーム画面グリッド配置を維持します",
   "displayForceLandscape": "強制横向き",

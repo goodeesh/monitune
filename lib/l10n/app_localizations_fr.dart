@@ -378,6 +378,13 @@ class AppLocalizationsFr extends AppLocalizations {
       'Applique la résolution sans toucher à la densité Android, afin de préserver l\'agencement des icônes du lanceur MIUI/HyperOS.';
 
   @override
+  String get displayScaleDensityTitle => 'Adapter la densité à la résolution';
+
+  @override
+  String get displayScaleDensitySubtitle =>
+      'Met la densité à l’échelle de la résolution, pour que l’interface garde sa taille au lieu d’être tassée.';
+
+  @override
   String get displayLauncherSafeMode => 'Mode sécurisé pour le lanceur';
 
   @override
